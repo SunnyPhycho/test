@@ -1,17 +1,15 @@
-name: Image Generator Bot
+name: External Image Bot
 
-# 이슈에 댓글이 달릴 때만 실행
+# 이제 댓글이 아니라 외부 신호(repository_dispatch)를 기다림
 on:
-  issue_comment:
-    types: [created]
+  repository_dispatch:
+    types: [create-meme] # 신호의 이름(이벤트 타입)
 
 jobs:
   generate-image:
-    # 댓글이 '/img'로 시작할 때만 실행
-    if: startsWith(github.event.comment.body, '/img')
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 저장소에 파일을 쓸 수 있는 권한 부여
+      contents: write
 
     steps:
       - name: Checkout code
@@ -27,13 +25,12 @@ jobs:
 
       - name: Parse Text and Generate Image
         run: |
-          # 댓글 내용에서 '/img ' 부분을 제거하고 텍스트만 추출
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          TEXT_CONTENT="${COMMENT_BODY//\/img /}"
+          # 외부에서 보낸 데이터(client_payload) 안에 있는 'text'를 꺼냄
+          TEXT_CONTENT="${{ github.event.client_payload.text }}"
           
-          echo "입력된 텍스트: $TEXT_CONTENT"
+          echo "외부에서 받은 텍스트: $TEXT_CONTENT"
           
-          # 파이썬 스크립트 실행 (텍스트 전달)
+          # 파이썬 스크립트 실행
           python generator.py "$TEXT_CONTENT"
 
       - name: Commit and Push
@@ -41,9 +38,6 @@ jobs:
           git config --global user.name "github-actions-bot"
           git config --global user.email "github-actions-bot@users.noreply.github.com"
           
-          # result 폴더 안의 모든 변경사항(새로 생긴 이미지)을 추가
           git add result/
-          
-          # 커밋 메시지도 동적으로 작성
-          git commit -m "Add generated image: ${{ github.event.comment.body }}" || echo "No changes to commit"
+          git commit -m "Auto-generated from external: ${{ github.event.client_payload.text }}" || echo "No changes"
           git push
