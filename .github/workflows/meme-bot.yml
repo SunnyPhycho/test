@@ -1,0 +1,49 @@
+name: Image Generator Bot
+
+# 이슈에 댓글이 달릴 때만 실행
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  generate-image:
+    # 댓글이 '/img'로 시작할 때만 실행
+    if: startsWith(github.event.comment.body, '/img')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 저장소에 파일을 쓸 수 있는 권한 부여
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install Pillow
+
+      - name: Parse Text and Generate Image
+        run: |
+          # 댓글 내용에서 '/img ' 부분을 제거하고 텍스트만 추출
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          TEXT_CONTENT="${COMMENT_BODY//\/img /}"
+          
+          echo "입력된 텍스트: $TEXT_CONTENT"
+          
+          # 파이썬 스크립트 실행 (텍스트 전달)
+          python generator.py "$TEXT_CONTENT"
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions-bot"
+          git config --global user.email "github-actions-bot@users.noreply.github.com"
+          
+          # result 폴더 안의 모든 변경사항(새로 생긴 이미지)을 추가
+          git add result/
+          
+          # 커밋 메시지도 동적으로 작성
+          git commit -m "Add generated image: ${{ github.event.comment.body }}" || echo "No changes to commit"
+          git push
