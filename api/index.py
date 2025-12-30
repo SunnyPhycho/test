@@ -10,16 +10,16 @@ import textwrap
 # ==========================================
 ASSETS = {
     # '호출이름': {'파일': '파일명.png', 'x': 가로좌표, 'y': 세로좌표, '색': '글자색'}
-    '류아': {'file': 'A.png', 'x': 400,  'y': 200, 'color': 'black'},
-    '류안':   {'file': 'B.png',  'x': 400,  'y': 200, 'color': 'black'},  
-    '에이드리안':   {'file': 'C.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '서연':   {'file': 'D.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '유진':   {'file': 'E.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '로완':   {'file': 'R.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '빈':   {'file': 'V.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '소렌':   {'file': 'S.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '제브릭':   {'file': 'Z.png',  'x': 400,  'y': 200, 'color': 'white'},  
-    '라스':   {'file': 'L.png',  'x': 400,  'y': 200, 'color': 'white'},  
+    '류아': {'file': 'A.png', 'x': 600,  'y': 200, 'color': 'black'},
+    '류안':   {'file': 'B.png',  'x': 600,  'y': 200, 'color': 'black'},  
+    '에이드리안':   {'file': 'C.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '서연':   {'file': 'D.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '유진':   {'file': 'E.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '로완':   {'file': 'R.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '빈':   {'file': 'V.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '소렌':   {'file': 'S.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '제브릭':   {'file': 'Z.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '라스':   {'file': 'L.png',  'x': 600,  'y': 200, 'color': 'white'},  
 }
 # ==========================================
 
