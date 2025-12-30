@@ -2,44 +2,82 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 from PIL import Image, ImageDraw, ImageFont
 import io
+import os
+import textwrap
+
+# ==========================================
+# ★ 여기만 수정하면 이미지/좌표 관리 끝!
+# ==========================================
+ASSETS = {
+    # '호출이름': {'파일': '파일명.png', 'x': 가로좌표, 'y': 세로좌표, '색': '글자색'}
+    '류아': {'file': '류아.png', 'x': 100,  'y': 200, 'color': 'black'},
+    '류안':   {'file': '류안.png',  'x': 100,  'y': 180, 'color': 'black'},  
+    'happy':   {'file': 'char_happy.png',  'x': 50,  'y': 210, 'color': 'yellow'},
+}
+# ==========================================
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        # 1. URL에서 텍스트 꺼내기 (?text=내용)
+        # 1. URL 파라미터 파싱
         parsed_path = urlparse(self.path)
         query_params = parse_qs(parsed_path.query)
-        # 텍스트가 없으면 기본값 출력
-        text = query_params.get('text', ['텍스트를 입력하세요'])[0]
+        
+        # 텍스트 가져오기
+        text_input = query_params.get('text', ['내용 없음'])[0]
+        
+        # 이미지 타입 가져오기 (없으면 'default' 사용)
+        img_type = query_params.get('type', ['default'])[0]
+        
+        # 설정 불러오기 (없는 타입을 요청하면 강제로 default로 설정)
+        if img_type not in ASSETS:
+            img_type = 'default'
+            
+        config = ASSETS[img_type]
+        
+        # 2. 파일 경로 설정
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(current_dir, config['file'])
+        font_path = os.path.join(current_dir, 'font.ttf')
 
-        # 2. 이미지 그리기 (메모리 상에서 처리)
-        # 배경 (검은색, 800x400)
-        img = Image.new('RGB', (800, 400), color=(0, 0, 0))
+        # 3. 이미지 로드
+        if os.path.exists(image_path):
+            img = Image.open(image_path).convert("RGBA")
+        else:
+            # 이미지가 서버에 없을 때 비상용 (빨간화면)
+            img = Image.new('RGB', (500, 300), color='darkred')
+
         draw = ImageDraw.Draw(img)
 
-        # 폰트 설정 (서버 기본 폰트 사용, 한글 깨질 수 있으니 나중에 폰트 파일 추가 권장)
+        # 4. 폰트 로드
         try:
-            # 리눅스 서버용 경로 (Vercel은 리눅스 기반)
-            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 40)
+            font = ImageFont.truetype(font_path, 30)
         except:
             font = ImageFont.load_default()
 
-        # 3. 텍스트 줄바꿈 및 그리기 로직 (아까랑 비슷)
-        # (간단하게 중앙 정렬만 구현)
-        text_bbox = draw.textbbox((0, 0), text, font=font)
-        text_width = text_bbox[2] - text_bbox[0]
-        text_height = text_bbox[3] - text_bbox[1]
+        # 5. 텍스트 그리기 (설정된 좌표 사용)
+        max_text_width = 20
+        lines = textwrap.wrap(text_input, width=max_text_width)
         
-        x = (800 - text_width) / 2
-        y = (400 - text_height) / 2
-        
-        draw.text((x, y), text, font=font, fill=(255, 255, 255))
+        text_x = config['x']
+        text_y = config['y']
+        text_color = config['color']
+        line_height = 40 
 
-        # 4. 이미지를 파일이 아닌 '바이트(데이터)'로 변환
+        for line in lines:
+            # 외곽선 (검은색 고정)
+            for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+                draw.text((text_x+dx, text_y+dy), line, font=font, fill="black")
+            
+            # 글자 본체 (설정된 색상)
+            draw.text((text_x, text_y), line, font=font, fill=text_color)
+            
+            text_y += line_height
+
+        # 6. 전송
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
         img_byte_arr = img_byte_arr.getvalue()
 
-        # 5. 브라우저한테 "이거 PNG 이미지야!" 하고 던져주기
         self.send_response(200)
         self.send_header('Content-type', 'image/png')
         self.end_headers()
