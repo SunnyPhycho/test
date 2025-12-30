@@ -62,7 +62,7 @@ class handler(BaseHTTPRequestHandler):
             font = ImageFont.load_default()
 
         # 5. 텍스트 그리기 (설정된 좌표 사용)
-        max_text_width = 20
+        max_text_width = 200
         lines = textwrap.wrap(text_input, width=max_text_width)
         
         text_x = config['x']
