@@ -10,9 +10,16 @@ import textwrap
 # ==========================================
 ASSETS = {
     # '호출이름': {'파일': '파일명.png', 'x': 가로좌표, 'y': 세로좌표, '색': '글자색'}
-    'A': {'file': 'A.png', 'x': 800,  'y': 200, 'color': 'black'},
-    'B':   {'file': 'B.png',  'x': 800,  'y': 200, 'color': 'black'},  
-    'happy':   {'file': 'char_happy.png',  'x': 50,  'y': 210, 'color': 'yellow'},
+    '류아': {'file': 'A.png', 'x': 400,  'y': 200, 'color': 'black'},
+    '류안':   {'file': 'B.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '에이드리안':   {'file': 'C.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '서연':   {'file': 'D.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '유진':   {'file': 'E.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '로완':   {'file': 'R.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '빈':   {'file': 'V.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '소렌':   {'file': 'S.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '제브릭':   {'file': 'Z.png',  'x': 400,  'y': 200, 'color': 'black'},  
+    '라스':   {'file': 'L.png',  'x': 400,  'y': 200, 'color': 'black'},  
 }
 # ==========================================
 
@@ -61,7 +68,7 @@ class handler(BaseHTTPRequestHandler):
         text_x = config['x']
         text_y = config['y']
         text_color = config['color']
-        line_height = 40 
+        line_height = 70 
 
         for line in lines:
             # 외곽선 (검은색 고정)
