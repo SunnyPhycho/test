@@ -10,8 +10,8 @@ import textwrap
 # ==========================================
 ASSETS = {
     # '호출이름': {'파일': '파일명.png', 'x': 가로좌표, 'y': 세로좌표, '색': '글자색'}
-    'A': {'file': '류아.png', 'x': 800,  'y': 200, 'color': 'black'},
-    'B':   {'file': '류안.png',  'x': 800,  'y': 200, 'color': 'black'},  
+    'A': {'file': 'A.png', 'x': 800,  'y': 200, 'color': 'black'},
+    'B':   {'file': 'B.png',  'x': 800,  'y': 200, 'color': 'black'},  
     'happy':   {'file': 'char_happy.png',  'x': 50,  'y': 210, 'color': 'yellow'},
 }
 # ==========================================
