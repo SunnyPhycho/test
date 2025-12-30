@@ -57,7 +57,7 @@ class handler(BaseHTTPRequestHandler):
 
         # 4. 폰트 로드
         try:
-            font = ImageFont.truetype(font_path, 60)
+            font = ImageFont.truetype(font_path, 42)
         except:
             font = ImageFont.load_default()
 
@@ -68,7 +68,7 @@ class handler(BaseHTTPRequestHandler):
         text_x = config['x']
         text_y = config['y']
         text_color = config['color']
-        line_height = 70 
+        line_height = 55
 
         for line in lines:
             # 외곽선 (검은색 고정)
