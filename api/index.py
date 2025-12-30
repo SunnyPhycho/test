@@ -57,7 +57,7 @@ class handler(BaseHTTPRequestHandler):
 
         # 4. 폰트 로드
         try:
-            font = ImageFont.truetype(font_path, 60)
+            font = ImageFont.truetype('KoPubWorld Batang Light.ttf', 60)
         except:
             font = ImageFont.load_default()
 
