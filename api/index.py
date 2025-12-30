@@ -44,7 +44,7 @@ class handler(BaseHTTPRequestHandler):
         # 2. 파일 경로 설정
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, config['file'])
-        font_path = os.path.join(current_dir, 'B.ttf')
+        font_path = os.path.join(current_dir, 'font.ttf')
 
         # 3. 이미지 로드
         if os.path.exists(image_path):
@@ -57,7 +57,7 @@ class handler(BaseHTTPRequestHandler):
 
         # 4. 폰트 로드
         try:
-            font = ImageFont.truetype('B.ttf', 60)
+            font = ImageFont.truetype(font_path, 60)
         except:
             font = ImageFont.load_default()
 
