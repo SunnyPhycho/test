@@ -10,8 +10,8 @@ import textwrap
 # ==========================================
 ASSETS = {
     # '호출이름': {'파일': '파일명.png', 'x': 가로좌표, 'y': 세로좌표, '색': '글자색'}
-    '류아': {'file': '류아.png', 'x': 100,  'y': 200, 'color': 'black'},
-    '류안':   {'file': '류안.png',  'x': 100,  'y': 180, 'color': 'black'},  
+    'A': {'file': '류아.png', 'x': 800,  'y': 200, 'color': 'black'},
+    'B':   {'file': '류안.png',  'x': 800,  'y': 200, 'color': 'black'},  
     'happy':   {'file': 'char_happy.png',  'x': 50,  'y': 210, 'color': 'yellow'},
 }
 # ==========================================
@@ -50,7 +50,7 @@ class handler(BaseHTTPRequestHandler):
 
         # 4. 폰트 로드
         try:
-            font = ImageFont.truetype(font_path, 30)
+            font = ImageFont.truetype(font_path, 60)
         except:
             font = ImageFont.load_default()
 
