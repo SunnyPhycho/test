@@ -137,16 +137,19 @@ class handler(BaseHTTPRequestHandler):
             draw.text((x, y), final_text, font=font, fill=color)
 
         # ==========================================================
-        # 2. 시간표 (Schedule) 그리기 (위치 조정됨)
+        # 2. 시간표 (Schedule) 그리기 (좌우 분할 정렬)
         # ==========================================================
         sch_data = query_params.get('sch', [''])[0].replace('_', ' ')
         
         if sch_data:
-            # ★ 수정된 좌표: AP(1000, 510)보다 훨씬 왼쪽인 600부터 시작
-            start_x = 540
-            # AP 바로 밑인 560부터 시작해서 아래 공간 활용
-            start_y = 560
-            # 줄 간격을 40으로 늘려서 시원하게
+            # 1) 요일 이름이 시작할 X좌표 (왼쪽 정렬 기준)
+            left_align_x = 540
+            
+            # 2) 과목 목록이 끝날 X좌표 (오른쪽 정렬 기준)
+            # 전체 너비가 1200이고, 깃털 장식 고려하여 1150 정도를 끝으로 설정
+            right_align_x = 1150
+            
+            start_y = 575
             line_height = 60
             
             try: sch_font = ImageFont.truetype(font_path, 36)
@@ -163,17 +166,29 @@ class handler(BaseHTTPRequestHandler):
                 class_list = parts[1].split('/')
                 while len(class_list) < 3: class_list.append("공강")
                 
-                display_text = f"[{day_name}] {class_list[0]} | {class_list[1]} | {class_list[2]}"
+                # --- [왼쪽] 요일 텍스트 ---
+                day_text = f"[{day_name}]"
+                
+                # --- [오른쪽] 과목 텍스트 ---
+                class_text = f"{class_list[0]} | {class_list[1]} | {class_list[2]}"
+                
+                # 과목 텍스트의 길이를 계산하여 X좌표 역산
+                class_text_width = sch_font.getlength(class_text)
+                class_x = right_align_x - class_text_width
                 
                 current_y = start_y + (i * line_height)
                 
-                # 외곽선
+                # 1. 요일 그리기 (왼쪽 정렬)
                 for dx in range(-1, 2):
                     for dy in range(-1, 2):
-                        draw.text((start_x+dx, current_y+dy), display_text, font=sch_font, fill="black")
+                        draw.text((left_align_x+dx, current_y+dy), day_text, font=sch_font, fill="black")
+                draw.text((left_align_x, current_y), day_text, font=sch_font, fill='#FFD700') # 요일은 금색 강조
                 
-                # 본문 (약간 밝은 회색으로 깃털과 구분)
-                draw.text((start_x, current_y), display_text, font=sch_font, fill='#E0E0E0')
+                # 2. 과목 그리기 (오른쪽 정렬)
+                for dx in range(-1, 2):
+                    for dy in range(-1, 2):
+                        draw.text((class_x+dx, current_y+dy), class_text, font=sch_font, fill="black")
+                draw.text((class_x, current_y), class_text, font=sch_font, fill='#E0E0E0') # 과목은 은색
 
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
