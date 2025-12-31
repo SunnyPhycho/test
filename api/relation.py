@@ -18,6 +18,7 @@ ASSETS = {
     '빈':   {'file': 'Vl.png', 'color': '#bfa6ec'},      
     '제브릭': {'file': 'Zl.png', 'color': '#bfa6ec'},      
     '소렌': {'file': 'Sl.png', 'color': '#bfa6ec'},      
+    '페이': {'file': 'Pl.png', 'color': '#bfa6ec'},      
     'default': {'file': 'hud_bg.png', 'color': '#CCCCCC'} 
 }
 
