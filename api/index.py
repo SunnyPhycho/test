@@ -58,18 +58,18 @@ class handler(BaseHTTPRequestHandler):
 
         # 4. 폰트 로드
         try:
-            font = ImageFont.truetype(font_path, 42)
+            font = ImageFont.truetype(font_path, 72)
         except:
             font = ImageFont.load_default()
 
         # 5. 텍스트 그리기 (설정된 좌표 사용)
-        max_text_width = 20
+        max_text_width = 25
         lines = textwrap.wrap(text_input, width=max_text_width)
         
         text_x = config['x']
         text_y = config['y']
         text_color = config['color']
-        line_height = 55
+        line_height = 66
 
         for line in lines:
             # 외곽선 (검은색 고정)
