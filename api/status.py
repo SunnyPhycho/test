@@ -142,14 +142,14 @@ class handler(BaseHTTPRequestHandler):
         sch_data = query_params.get('sch', [''])[0].replace('_', ' ')
         
         if sch_data:
-            # ★ 수정된 좌표: AP(1000, 510)보다 훨씬 왼쪽인 650부터 시작
-            start_x = 650
+            # ★ 수정된 좌표: AP(1000, 510)보다 훨씬 왼쪽인 600부터 시작
+            start_x = 600
             # AP 바로 밑인 560부터 시작해서 아래 공간 활용
             start_y = 560
             # 줄 간격을 40으로 늘려서 시원하게
-            line_height = 40
+            line_height = 60
             
-            try: sch_font = ImageFont.truetype(font_path, 24)
+            try: sch_font = ImageFont.truetype(font_path, 36)
             except: sch_font = ImageFont.load_default()
 
             days = sch_data.split(',')
