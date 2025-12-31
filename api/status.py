@@ -32,7 +32,7 @@ def score_to_grade(score):
     else: return 'F'
 
 # ==================================================================
-# 2. HUD 좌표 설정 (업데이트됨)
+# 2. HUD 좌표 설정
 # ==================================================================
 TEXT_COLOR = '#FFFFFF' 
 
@@ -41,7 +41,7 @@ ASSETS = {
         'file': 'hud_bg.png', 
         'fields': [
             # [중앙 상단] T
-            {'param': 'turn',  'x': 800, 'y': 160, 'size': 75, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'turn',  'x': 800, 'y': 190, 'size': 75, 'color': TEXT_COLOR, 'mode': 'text'},
 
             # [왼쪽 컬럼]
             {'param': 'date',  'x': 400, 'y': 330, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
@@ -137,36 +137,32 @@ class handler(BaseHTTPRequestHandler):
             draw.text((x, y), final_text, font=font, fill=color)
 
         # ==========================================================
-        # 2. 시간표 (Schedule) 그리기
+        # 2. 시간표 (Schedule) 그리기 (위치 조정됨)
         # ==========================================================
-        # 입력형식: &sch=월:마법/공강/역사,화:검술/검술/공강 ...
         sch_data = query_params.get('sch', [''])[0].replace('_', ' ')
         
         if sch_data:
-            # 좌표 설정: 우측 하단 (AP 아래 공간)
-            # AP가 (1000, 510)이므로, 그 아래인 (780, 580) 쯤부터 시작하면 안정적
-            start_x = 780
-            start_y = 580
-            line_height = 35
+            # ★ 수정된 좌표: AP(1000, 510)보다 훨씬 왼쪽인 650부터 시작
+            start_x = 650
+            # AP 바로 밑인 560부터 시작해서 아래 공간 활용
+            start_y = 560
+            # 줄 간격을 40으로 늘려서 시원하게
+            line_height = 40
             
             try: sch_font = ImageFont.truetype(font_path, 24)
             except: sch_font = ImageFont.load_default()
 
             days = sch_data.split(',')
             for i, day_info in enumerate(days):
-                if i >= 5: break # 월~금 최대 5줄
+                if i >= 5: break 
                 
-                # "월:마법/공강/역사" -> day="월", classes="마법/공강/역사"
                 parts = day_info.split(':')
                 if len(parts) < 2: continue
                 
                 day_name = parts[0]
                 class_list = parts[1].split('/')
-                
-                # 3개 미만이면 공강으로 채움
                 while len(class_list) < 3: class_list.append("공강")
                 
-                # 출력 문자열 구성: [월] 1교시 | 2교시 | 3교시
                 display_text = f"[{day_name}] {class_list[0]} | {class_list[1]} | {class_list[2]}"
                 
                 current_y = start_y + (i * line_height)
@@ -176,7 +172,7 @@ class handler(BaseHTTPRequestHandler):
                     for dy in range(-1, 2):
                         draw.text((start_x+dx, current_y+dy), display_text, font=sch_font, fill="black")
                 
-                # 본문
+                # 본문 (약간 밝은 회색으로 깃털과 구분)
                 draw.text((start_x, current_y), display_text, font=sch_font, fill='#E0E0E0')
 
         img_byte_arr = io.BytesIO()
