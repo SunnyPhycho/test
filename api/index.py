@@ -45,7 +45,7 @@ class handler(BaseHTTPRequestHandler):
         # 2. 파일 경로 설정
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, config['file'])
-        font_path = os.path.join(current_dir, 'font.ttf')
+        font_path = os.path.join(current_dir, 'yuna.ttf')
 
         # 3. 이미지 로드
         if os.path.exists(image_path):
