@@ -20,7 +20,7 @@ ASSETS = {
     '소렌':   {'file': 'S.png',  'x': 600,  'y': 200, 'color': 'white'},  
     '제브릭':   {'file': 'Z.png',  'x': 600,  'y': 200, 'color': 'white'},  
     '라스':   {'file': 'L.png',  'x': 600,  'y': 200, 'color': 'white'},  
-    '페이':   {'file': 'P.png',  'x': 600,  'y': 200, 'color': 'white'},  
+    '페이':   {'file': 'P.png',  'x': 600,  'y': 200, 'color': 'black'},  
 }
 # ==========================================
 
