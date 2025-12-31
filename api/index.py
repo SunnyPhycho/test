@@ -31,7 +31,7 @@ class handler(BaseHTTPRequestHandler):
         query_params = parse_qs(parsed_path.query)
         
         # 텍스트 가져오기
-        text_input = query_params.get('text', ['내용 없음'])[0]
+        text_input = query_params.get('text', ['내용 없음'])[0].replace('_', ' ')
         
         # 이미지 타입 가져오기 (없으면 'default' 사용)
         img_type = query_params.get('type', ['default'])[0]
