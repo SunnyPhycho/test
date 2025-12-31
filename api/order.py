@@ -26,7 +26,7 @@ class handler(BaseHTTPRequestHandler):
             font_head = ImageFont.truetype(font_path, 32)
             font_label = ImageFont.truetype(font_path, 20)
             font_val = ImageFont.truetype(font_path, 28)
-            font_stamp = ImageFont.truetype(font_path, 40)
+            font_stamp = ImageFont.truetype(font_path, 30)
         except:
             font_head = ImageFont.load_default()
             font_label = ImageFont.load_default()
