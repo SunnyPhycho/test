@@ -41,7 +41,7 @@ ASSETS = {
         'file': 'hud_bg.png', 
         'fields': [
             # [중앙 상단] T
-            {'param': 'turn',  'x': 800, 'y': 190, 'size': 75, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'turn',  'x': 800, 'y': 160, 'size': 75, 'color': TEXT_COLOR, 'mode': 'text'},
 
             # [왼쪽 컬럼]
             {'param': 'date',  'x': 400, 'y': 330, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
