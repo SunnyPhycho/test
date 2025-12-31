@@ -5,7 +5,7 @@ import io
 import os
 
 # ==================================================================
-# 1. 캐릭터 설정 (파일, 테마색)
+# 1. 캐릭터 설정 (파일, 테마색) - 기존 유지
 # ==================================================================
 ASSETS = {
     # 이름: {파일명, 고유색상(점 찍을 때 사용)}
@@ -24,30 +24,21 @@ ASSETS = {
 }
 
 # ==================================================================
-# 2. 좌표계 설정
+# 2. 캔버스 설정 (와이드형)
 # ==================================================================
-GRAPH_CONFIG = {
-    'width': 400,       # 그래프 영역 너비 (이미지 오른쪽 절반)
-    'height': 600,      # 그래프 영역 높이
-    'range': 100,       # 좌표 범위 (-100 ~ 100)
-    'axis_labels': ['학문적 호감도 (X)', '개인적 호감도 (Y)']
-}
+CANVAS_W = 800
+CANVAS_H = 300  # 높이를 절반으로 줄임
+GRAPH_W = 300   # 그래프 영역 너비 (오른쪽 끝)
+CHAR_AREA_W = CANVAS_W - GRAPH_W # 캐릭터 영역 (왼쪽 500px)
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path)
         query_params = parse_qs(parsed_path.query)
 
-        # ---------------------------------------------------------
         # 1. 데이터 파싱
-        # 입력 예시: ?data=류아:50:30|서연:-20:80
-        # (이름:X좌표:Y좌표, 파이프(|)로 인물 구분)
-        # ---------------------------------------------------------
         raw_data = query_params.get('data', [''])[0]
-        
-        # 파싱된 데이터를 담을 리스트: [{'name': '류아', 'x': 50, 'y': 30}, ...]
         char_list = []
-        
         if raw_data:
             entries = raw_data.split('|')
             for entry in entries:
@@ -58,63 +49,32 @@ class handler(BaseHTTPRequestHandler):
                         x = int(parts[1])
                         y = int(parts[2])
                         char_list.append({'name': name, 'x': x, 'y': y})
-                    except:
-                        continue
-        
-        # 데이터가 없으면 기본값 (류아 0,0)
+                    except: continue
         if not char_list:
             char_list.append({'name': '류아', 'x': 0, 'y': 0})
 
-        # ---------------------------------------------------------
-        # 2. 캔버스 준비 (전체 800 x 600)
-        # 왼쪽 400: 스탠딩 이미지 / 오른쪽 400: 그래프
-        # ---------------------------------------------------------
-        TOTAL_W, TOTAL_H = 800, 600
-        base_img = Image.new('RGB', (TOTAL_W, TOTAL_H), color='#2E2E2E')
+        # 2. 캔버스 생성
+        base_img = Image.new('RGB', (CANVAS_W, CANVAS_H), color='#202020')
         draw = ImageDraw.Draw(base_img)
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
         font_path = os.path.join(current_dir, 'font.ttf')
         try:
-            # 폰트 로드 (그래프 라벨용 작게, 이름용 크게)
-            font_s = ImageFont.truetype(font_path, 20)
-            font_m = ImageFont.truetype(font_path, 28)
+            font_s = ImageFont.truetype(font_path, 16) # 폰트 크기 축소
+            font_m = ImageFont.truetype(font_path, 20)
         except:
             font_s = ImageFont.load_default()
             font_m = ImageFont.load_default()
 
-        # ---------------------------------------------------------
-        # 3. [왼쪽 영역] 캐릭터 스탠딩 배치 (자동 리사이징)
-        # ---------------------------------------------------------
-        left_area_w = 400
-        left_area_h = 600
-        count = len(char_list)
-
-        # 배치 전략 설정
-        # 1명: 꽉 채움 (1x1)
-        # 2명: 위/아래 2분할 (1x2)
-        # 3~4명: 2x2 그리드
-        # 그 이상: 4명까지만 그림 (또는 로직 추가 가능)
+        # 3. [왼쪽] 캐릭터 스탠딩 (가로 일렬 배치)
+        # 최대 4명까지 표시한다고 가정
+        display_chars = char_list[:4]
+        count = len(display_chars)
         
-        layout = [] # (x, y, w, h)
+        # 각 캐릭터가 차지할 너비
+        slot_w = CHAR_AREA_W // max(1, count)
         
-        if count == 1:
-            layout.append((0, 0, left_area_w, left_area_h))
-        elif count == 2:
-            layout.append((0, 0, left_area_w, left_area_h // 2))
-            layout.append((0, left_area_h // 2, left_area_w, left_area_h // 2))
-        else: # 3명 이상은 2x2 그리드
-            half_w = left_area_w // 2
-            half_h = left_area_h // 2
-            layout.append((0, 0, half_w, half_h))            # 좌상
-            layout.append((half_w, 0, half_w, half_h))      # 우상
-            layout.append((0, half_h, half_w, half_h))      # 좌하
-            layout.append((half_w, half_h, half_w, half_h)) # 우하
-
-        # 이미지 붙여넣기
-        for i, char_info in enumerate(char_list):
-            if i >= 4: break # 4명 초과는 생략 (공간 부족)
-            
+        for i, char_info in enumerate(display_chars):
             name = char_info['name']
             conf = ASSETS.get(name, ASSETS['default'])
             img_path = os.path.join(current_dir, conf['file'])
@@ -122,61 +82,53 @@ class handler(BaseHTTPRequestHandler):
             if os.path.exists(img_path):
                 char_img = Image.open(img_path).convert("RGBA")
                 
-                # 배치할 영역 (x, y, w, h)
-                dest_x, dest_y, dest_w, dest_h = layout[i]
+                # 리사이즈 (높이 기준 맞춤)
+                # 약간의 여백(padding)을 위해 높이 90% 사용
+                target_h = int(CANVAS_H * 0.9)
+                ratio = target_h / char_img.height
+                target_w = int(char_img.width * ratio)
                 
-                # 비율 유지하며 리사이즈 (fit)
-                # 원본 비율 계산
-                img_ratio = char_img.width / char_img.height
-                dest_ratio = dest_w / dest_h
+                # 만약 너비가 슬롯보다 넓으면 너비 기준으로 재조정
+                if target_w > slot_w:
+                    target_w = slot_w
+                    target_h = int(slot_w / (char_img.width / char_img.height))
                 
-                if img_ratio > dest_ratio:
-                    # 이미지가 더 납작함 -> 너비 기준
-                    new_w = dest_w
-                    new_h = int(dest_w / img_ratio)
-                else:
-                    # 이미지가 더 길쭉함 -> 높이 기준
-                    new_h = dest_h
-                    new_w = int(dest_h * img_ratio)
+                char_img = char_img.resize((target_w, target_h))
                 
-                char_img = char_img.resize((new_w, new_h))
+                # 위치 계산 (슬롯 중앙 하단 정렬)
+                x_pos = (i * slot_w) + (slot_w - target_w) // 2
+                y_pos = CANVAS_H - target_h # 바닥에 붙이기
                 
-                # 영역 중앙 정렬 좌표
-                paste_x = dest_x + (dest_w - new_w) // 2
-                paste_y = dest_y + (dest_h - new_h) // 2
-                
-                base_img.paste(char_img, (paste_x, paste_y), char_img)
+                base_img.paste(char_img, (x_pos, y_pos), char_img)
 
-        # ---------------------------------------------------------
-        # 4. [오른쪽 영역] 좌표계 그리기
-        # ---------------------------------------------------------
-        gx_start = 400
+        # 4. [오른쪽] 미니 좌표계
+        gx_start = CHAR_AREA_W
         gy_start = 0
-        gw = 400
-        gh = 600
+        gw = GRAPH_W
+        gh = CANVAS_H
         
         center_x = gx_start + (gw // 2)
         center_y = gy_start + (gh // 2)
         
-        # (1) 배경 박스
-        draw.rectangle([(gx_start, gy_start), (gx_start+gw, gy_start+gh)], fill='#202020', outline='white')
+        # 배경 박스 (약간 더 어둡게)
+        draw.rectangle([(gx_start, gy_start), (CANVAS_W, CANVAS_H)], fill='#1A1A1A', outline='#555555')
         
-        # (2) 십자선 (X축, Y축)
-        draw.line([(gx_start, center_y), (gx_start+gw, center_y)], fill='gray', width=2) # 가로선
-        draw.line([(center_x, gy_start), (center_x, gy_start+gh)], fill='gray', width=2) # 세로선
+        # 십자선
+        draw.line([(gx_start, center_y), (CANVAS_W, center_y)], fill='#444444', width=1)
+        draw.line([(center_x, gy_start), (center_x, CANVAS_H)], fill='#444444', width=1)
         
-        # (3) 축 라벨
-        draw.text((gx_start + 10, center_y + 5), "-학문", font=font_s, fill='gray')
-        draw.text((gx_start + gw - 50, center_y + 5), "+학문", font=font_s, fill='gray')
-        draw.text((center_x + 5, gy_start + 10), "+개인", font=font_s, fill='gray')
-        draw.text((center_x + 5, gy_start + gh - 30), "-개인", font=font_s, fill='gray')
+        # 축 라벨 (간소화)
+        draw.text((gx_start + 5, center_y + 2), "-학", font=font_s, fill='#888888')
+        draw.text((CANVAS_W - 30, center_y + 2), "+학", font=font_s, fill='#888888')
+        draw.text((center_x + 2, gy_start + 5), "+사", font=font_s, fill='#888888')
+        draw.text((center_x + 2, CANVAS_H - 20), "-사", font=font_s, fill='#888888')
 
-        # ---------------------------------------------------------
-        # 5. [오른쪽 영역] 점 찍기
-        # ---------------------------------------------------------
-        max_val = 100 # 좌표계 최대값
-        scale = 180   # 그래프 상에서 100점이 차지할 픽셀 반경 (200이 최대지만 여백 둠)
-
+        # 5. 점 찍기
+        max_val = 100
+        # 스케일: 그래프 크기의 80% 정도만 쓰도록 (여백)
+        scale_x = (gw // 2) * 0.8
+        scale_y = (gh // 2) * 0.8
+        
         for char_info in char_list:
             name = char_info['name']
             val_x = char_info['x']
@@ -185,27 +137,20 @@ class handler(BaseHTTPRequestHandler):
             conf = ASSETS.get(name, ASSETS['default'])
             color = conf['color']
 
-            # 좌표 변환
-            # X: 중앙 + (값/최대값 * 스케일)
-            # Y: 중앙 - (값/최대값 * 스케일) -> Y는 위로 갈수록 값이 작아지므로 빼야 함
-            plot_x = center_x + (val_x / max_val * scale)
-            plot_y = center_y - (val_y / max_val * scale)
+            plot_x = center_x + (val_x / max_val * scale_x)
+            plot_y = center_y - (val_y / max_val * scale_y)
             
-            # 범위 제한 (그래프 밖으로 안 튀어나가게)
-            plot_x = max(gx_start + 10, min(gx_start + gw - 10, plot_x))
-            plot_y = max(gy_start + 10, min(gy_start + gh - 10, plot_y))
+            # 클램핑 (그래프 영역 밖으로 안 나가게)
+            plot_x = max(gx_start + 5, min(CANVAS_W - 5, plot_x))
+            plot_y = max(gy_start + 5, min(CANVAS_H - 5, plot_y))
             
-            # 점 그리기 (반지름 6)
-            r = 6
+            # 점
+            r = 5
             draw.ellipse([(plot_x-r, plot_y-r), (plot_x+r, plot_y+r)], fill=color, outline='white')
             
-            # 이름표 (점 옆에)
-            label_text = f"{name}({val_x},{val_y})"
-            draw.text((plot_x + 10, plot_y - 10), label_text, font=font_s, fill=color)
+            # 이름 (점 바로 위)
+            draw.text((plot_x - 10, plot_y - 20), name, font=font_s, fill=color)
 
-        # ---------------------------------------------------------
-        # 6. 이미지 출력
-        # ---------------------------------------------------------
         img_byte_arr = io.BytesIO()
         base_img.save(img_byte_arr, format='PNG')
         img_byte_arr = img_byte_arr.getvalue()
