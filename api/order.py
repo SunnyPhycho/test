@@ -10,7 +10,7 @@ class handler(BaseHTTPRequestHandler):
         query_params = parse_qs(parsed_path.query)
         
         # 파라미터 받기 (기본값 설정)
-        item_text = query_params.get('item', ['Unknown'])[0]
+        item_text = query_params.get('item', ['Unknown'])[0].replace('_', ' ')
         price_text = query_params.get('price', ['?'])[0]
         
         # 1. 캔버스 (가로형 작업지시서 600x300)
