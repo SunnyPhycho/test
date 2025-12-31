@@ -9,11 +9,16 @@ import os
 # ==================================================================
 ASSETS = {
     # 이름: {파일명, 고유색상(점 찍을 때 사용)}
-    '류아': {'file': 'Al.png', 'color': '#FF6B6B'},      # 빨강 계열
-    '류안': {'file': 'Bl.png', 'color': '#4ECDC4'},      # 민트 계열
-    '에이드리안': {'file': 'Cl.png', 'color': '#FFE66D'}, # 노랑 계열
-    '서연': {'file': 'Dl.png', 'color': '#1A535C'},      # 짙은 청록
-    '유진': {'file': 'El.png', 'color': '#FF9F1C'},      # 주황
+    '류아': {'file': 'Al.png', 'color': '#be9d8c'},      # 아이보리 계열
+    '류안': {'file': 'Bl.png', 'color': '#372c32'},      # 검정 계열
+    '에이드리안': {'file': 'Cl.png', 'color': '#3a675f'}, # 초록 계열
+    '서연': {'file': 'Dl.png', 'color': '#a91410'},      # 빨강
+    '유진': {'file': 'El.png', 'color': '#bfa6ec'},      # 연보라
+    '로완': {'file': 'Rl.png', 'color': '#bfa6ec'},      # 연보라
+    '라스': {'file': 'Ll.png', 'color': '#bfa6ec'},      # 연보라
+    '빈': {'file': 'Vl.png', 'color': '#bfa6ec'},      # 연보라
+    '제브릭': {'file': 'Zl.png', 'color': '#bfa6ec'},      # 연보라
+    '소렌': {'file': 'Sl.png', 'color': '#bfa6ec'},      # 연보라
     # 이미지가 없는 캐릭터를 위한 기본값
     'default': {'file': 'hud_bg.png', 'color': '#CCCCCC'} 
 }
