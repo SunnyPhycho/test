@@ -108,7 +108,7 @@ class handler(BaseHTTPRequestHandler):
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, config['file'])
-        font_path = os.path.join(current_dir, 'Diphy.ttf')
+        font_path = os.path.join(current_dir, 'HLB.ttf')
 
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
