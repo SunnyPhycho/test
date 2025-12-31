@@ -6,10 +6,8 @@ import os
 import re
 
 # ==================================================================
-# 1. 등급/점수 계산 로직 (기존과 동일)
+# 1. 등급/점수 계산 로직
 # ==================================================================
-
-# (1) 성적 평균용 점수 (GPA)
 GPA_MAP = {
     'A+': 4.3, 'A0': 4.0, 'A': 4.0, 'A-': 3.7,
     'B+': 3.3, 'B0': 3.0, 'B': 3.0, 'B-': 2.7,
@@ -17,8 +15,6 @@ GPA_MAP = {
     'D+': 1.3, 'D0': 1.0, 'D': 1.0, 'D-': 0.7,
     'F': 0.0
 }
-
-# (2) AP 지급용 점수
 AP_BASE_MAP = {'A': 10, 'B': 7, 'C': 4, 'D': 2, 'F': 0}
 
 def score_to_grade(score):
@@ -36,48 +32,31 @@ def score_to_grade(score):
     else: return 'F'
 
 # ==================================================================
-# 2. HUD 좌표 설정 (★ 여기를 이미지에 맞춰 수정!)
+# 2. HUD 좌표 설정 (업데이트됨)
 # ==================================================================
-# 색상은 배경이 어두우니 'White'나 밝은 금색 '#FFFACD' 추천
 TEXT_COLOR = '#FFFFFF' 
 
 ASSETS = {
     'academy': {
         'file': 'hud_bg.png', 
         'fields': [
-            # -----------------------------------------------------------
-            # [중앙 상단] T (Turn)
-            # -----------------------------------------------------------
-            # 예상: T| 옆이니까 중앙에서 약간 오른쪽
+            # [중앙 상단] T
             {'param': 'turn',  'x': 800, 'y': 190, 'size': 75, 'color': TEXT_COLOR, 'mode': 'text'},
 
-            # -----------------------------------------------------------
-            # [왼쪽 컬럼] 날짜, 위치, 장면, 학년
-            # -----------------------------------------------------------
-            # x좌표는 동일하게 맞추고 y좌표만 내림
+            # [왼쪽 컬럼]
             {'param': 'date',  'x': 400, 'y': 330, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
             {'param': 'loc',   'x': 400, 'y': 420, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
             {'param': 'scene', 'x': 400, 'y': 510, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
             {'param': 'grade', 'x': 400, 'y': 600, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
 
-            # -----------------------------------------------------------
-            # [오른쪽 컬럼] 수업, 성적, AP
-            # -----------------------------------------------------------
-            # x좌표를 오른쪽으로 이동
+            # [오른쪽 컬럼]
             {'param': 'class', 'x': 1000, 'y': 330, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
-            
-            # 성적 (자동계산)
             {'param': 'score', 'x': 1000, 'y': 420, 'size': 40, 'color': TEXT_COLOR, 'mode': 'grade_avg'},
-            
-            # AP (자동계산)
             {'param': 'spent', 'x': 1000, 'y': 510, 'size': 40, 'color': TEXT_COLOR, 'mode': 'ap_net'},
         ]
     }
 }
 
-# ==================================================================
-# 3. 데이터 처리 로직 (이전과 동일)
-# ==================================================================
 def process_value(raw_val, mode, all_params):
     text_val = raw_val.replace('_', ' ')
     try:
@@ -118,9 +97,6 @@ def process_value(raw_val, mode, all_params):
     except:
         return "ERR"
 
-# ==================================================================
-# 4. 핸들러 (라벨 그리는 부분 삭제됨)
-# ==================================================================
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path)
@@ -134,23 +110,18 @@ class handler(BaseHTTPRequestHandler):
         image_path = os.path.join(current_dir, config['file'])
         font_path = os.path.join(current_dir, 'font.ttf')
 
-        # 이미지 로드
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
         else:
-            # 이미지가 없을 때 임시 캔버스 (크기 추정 1200x800)
             img = Image.new('RGB', (1200, 800), color='#000033')
 
         draw = ImageDraw.Draw(img)
 
+        # 1. 기본 필드 그리기
         for field in config['fields']:
             param_name = field['param']
-            
-            # 값 가져오기 & 처리
             raw_val = query_params.get(param_name, [''])[0]
             processed_val = process_value(raw_val, field['mode'], query_params)
-            
-            # ★ 라벨(label) 없이 값(processed_val)만 그립니다.
             final_text = processed_val
             
             try: font = ImageFont.truetype(font_path, field['size'])
@@ -159,14 +130,54 @@ class handler(BaseHTTPRequestHandler):
             x, y = field['x'], field['y']
             color = field['color']
             
-            # 외곽선 (가독성 향상) - 검은색
             stroke_width = 2
             for dx in range(-stroke_width, stroke_width+1):
                 for dy in range(-stroke_width, stroke_width+1):
                     draw.text((x+dx, y+dy), final_text, font=font, fill="black")
-            
-            # 본문 텍스트 - 설정된 색(흰색)
             draw.text((x, y), final_text, font=font, fill=color)
+
+        # ==========================================================
+        # 2. 시간표 (Schedule) 그리기
+        # ==========================================================
+        # 입력형식: &sch=월:마법/공강/역사,화:검술/검술/공강 ...
+        sch_data = query_params.get('sch', [''])[0].replace('_', ' ')
+        
+        if sch_data:
+            # 좌표 설정: 우측 하단 (AP 아래 공간)
+            # AP가 (1000, 510)이므로, 그 아래인 (780, 580) 쯤부터 시작하면 안정적
+            start_x = 780
+            start_y = 580
+            line_height = 35
+            
+            try: sch_font = ImageFont.truetype(font_path, 24)
+            except: sch_font = ImageFont.load_default()
+
+            days = sch_data.split(',')
+            for i, day_info in enumerate(days):
+                if i >= 5: break # 월~금 최대 5줄
+                
+                # "월:마법/공강/역사" -> day="월", classes="마법/공강/역사"
+                parts = day_info.split(':')
+                if len(parts) < 2: continue
+                
+                day_name = parts[0]
+                class_list = parts[1].split('/')
+                
+                # 3개 미만이면 공강으로 채움
+                while len(class_list) < 3: class_list.append("공강")
+                
+                # 출력 문자열 구성: [월] 1교시 | 2교시 | 3교시
+                display_text = f"[{day_name}] {class_list[0]} | {class_list[1]} | {class_list[2]}"
+                
+                current_y = start_y + (i * line_height)
+                
+                # 외곽선
+                for dx in range(-1, 2):
+                    for dy in range(-1, 2):
+                        draw.text((start_x+dx, current_y+dy), display_text, font=sch_font, fill="black")
+                
+                # 본문
+                draw.text((start_x, current_y), display_text, font=sch_font, fill='#E0E0E0')
 
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
