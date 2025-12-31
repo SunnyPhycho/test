@@ -49,28 +49,28 @@ ASSETS = {
             # [중앙 상단] T (Turn)
             # -----------------------------------------------------------
             # 예상: T| 옆이니까 중앙에서 약간 오른쪽
-            {'param': 'turn',  'x': 700, 'y': 150, 'size': 45, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'turn',  'x': 800, 'y': 190, 'size': 75, 'color': TEXT_COLOR, 'mode': 'text'},
 
             # -----------------------------------------------------------
             # [왼쪽 컬럼] 날짜, 위치, 장면, 학년
             # -----------------------------------------------------------
             # x좌표는 동일하게 맞추고 y좌표만 내림
-            {'param': 'date',  'x': 400, 'y': 310, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
-            {'param': 'loc',   'x': 400, 'y': 390, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
-            {'param': 'scene', 'x': 400, 'y': 470, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
-            {'param': 'grade', 'x': 400, 'y': 550, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'date',  'x': 400, 'y': 330, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'loc',   'x': 400, 'y': 420, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'scene', 'x': 400, 'y': 510, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'grade', 'x': 400, 'y': 600, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
 
             # -----------------------------------------------------------
             # [오른쪽 컬럼] 수업, 성적, AP
             # -----------------------------------------------------------
             # x좌표를 오른쪽으로 이동
-            {'param': 'class', 'x': 900, 'y': 310, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
+            {'param': 'class', 'x': 1000, 'y': 330, 'size': 40, 'color': TEXT_COLOR, 'mode': 'text'},
             
             # 성적 (자동계산)
-            {'param': 'score', 'x': 900, 'y': 390, 'size': 40, 'color': TEXT_COLOR, 'mode': 'grade_avg'},
+            {'param': 'score', 'x': 1000, 'y': 420, 'size': 40, 'color': TEXT_COLOR, 'mode': 'grade_avg'},
             
             # AP (자동계산)
-            {'param': 'spent', 'x': 900, 'y': 470, 'size': 40, 'color': TEXT_COLOR, 'mode': 'ap_net'},
+            {'param': 'spent', 'x': 1000, 'y': 510, 'size': 40, 'color': TEXT_COLOR, 'mode': 'ap_net'},
         ]
     }
 }
