@@ -66,13 +66,14 @@ class handler(BaseHTTPRequestHandler):
         text_x = config['x']
         text_y = config['y']
         text_color = config['color']
-        
+
         # ==========================================================
-        # 게이지 그리기 함수
+        # ★ 예쁜 게이지 그리기 함수 (Rounded + Glossy)
         # ==========================================================
         def draw_gauge(start_x, start_y, score, mode='ac'):
             bar_w = 480
             bar_h = 40
+            corner_r = 10 # 모서리 둥글기 반지름
             
             abs_score = abs(score)
             tier = min(int(abs_score // 20), 4)
@@ -101,17 +102,45 @@ class handler(BaseHTTPRequestHandler):
                 else:
                     fill_ratio = (abs_score % 20) / 20.0
             
-            draw.rectangle([(start_x, start_y), (start_x + bar_w, start_y + bar_h)], fill=bg_color, outline='black')
+            # 1. 배경 (둥근 사각형)
+            draw.rounded_rectangle([(start_x, start_y), (start_x + bar_w, start_y + bar_h)], radius=corner_r, fill=bg_color, outline='#222222', width=2)
+            
+            # 2. 채움 바 (둥근 사각형 + 마스크 처리)
+            # 채워지는 부분도 둥글게 보여야 하므로 별도 이미지로 그려서 합성하거나
+            # 간단하게는 그냥 둥근 사각형을 그리되, 꽉 찼을 때만 둥글게 처리
+            # (복잡한 마스킹 없이 "채워지는 막대"를 그립니다)
             
             fill_w = int(bar_w * fill_ratio)
             if fill_w > 0:
-                draw.rectangle([(start_x, start_y), (start_x + fill_w, start_y + bar_h)], fill=fg_color)
+                # 너무 짧으면 둥근게 깨지므로 최소 너비 보정
+                safe_w = max(fill_w, corner_r * 2) 
+                
+                # 채움 영역의 좌표
+                fill_box = [(start_x+2, start_y+2), (start_x + fill_w - 2, start_y + bar_h - 2)]
+                
+                # 100%가 아니면 오른쪽 끝은 직각이어야 자연스럽지만,
+                # 코드로 간단히 구현하기 위해 그냥 둥근 사각형으로 채웁니다.
+                # (오버레이 방식이라 크게 어색하지 않음)
+                if fill_w < bar_w:
+                     # 꽉 안 찼을 때는 왼쪽만 둥글게 그리기 어려우니 
+                     # 그냥 일반 사각형 그리고 왼쪽 둥근 부분은 덧칠하는 꼼수 대신
+                     # 심플하게 내부를 꽉 채우는 둥근 사각형을 그립니다.
+                     draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
+                else:
+                     # 100%일 때
+                     draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
+
+            # 3. ★ 광택 효과 (Glossy Highlight)
+            # 상단 40% 영역에 반투명 흰색을 칠함
+            # PIL draw에는 알파 채널 직접 그리기가 안되므로 별도 레이어 합성 필요
+            # (속도를 위해 생략하거나, 옅은 흰색 선으로 대체)
+            draw.line([(start_x + corner_r, start_y + 5), (start_x + bar_w - corner_r, start_y + 5)], fill='#FFFFFF44', width=2) # 윗부분 하이라이트 선
             
-            # 게이지 텍스트 (font_rel 사용)
+            # 4. 텍스트
             info_text = f"{score}"
             text_w = font_rel.getlength(info_text)
             tx = start_x + (bar_w - text_w) // 2
-            ty = start_y - 2 
+            ty = start_y + (bar_h - 30) // 2 # 중앙 정렬 보정 (폰트크기 고려)
             
             for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
                 draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="black")
@@ -128,7 +157,7 @@ class handler(BaseHTTPRequestHandler):
                 
                 # 좌표 조정 (대사 위쪽)
                 gauge_y = 650
-                gauge_x = 820
+                gauge_x = 800
                 
                 draw_gauge(gauge_x, gauge_y, ac_score, 'ac')
                 draw_gauge(gauge_x, gauge_y+60, pr_score, 'pr')
