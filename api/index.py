@@ -64,6 +64,7 @@ class handler(BaseHTTPRequestHandler):
         image_path = os.path.join(current_dir, config['file'])
         font_path01 = os.path.join(current_dir, 'yuna.ttf')
         font_path02 = os.path.join(current_dir, 'HLB.ttf')
+        font_path03 = os.path.join(current_dir, 'NEB.ttf')
 
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
@@ -76,6 +77,7 @@ class handler(BaseHTTPRequestHandler):
         try:
             font_main = ImageFont.truetype(font_path01, 60) # 대사 폰트 크기 60
             font_rel = ImageFont.truetype(font_path02, 24)  # 게이지 폰트 크기 16
+            font_icon = ImageFont.truetype(font_path03, 40)  # 게이지 폰트 크기 16
         except:
             font_main = ImageFont.load_default()
             font_rel = ImageFont.load_default()
@@ -151,7 +153,7 @@ class handler(BaseHTTPRequestHandler):
             # 채워진 너비(fill_w)가 있으면 그 끝에 아이콘 표시
             if fill_w > 0:
                 # 아이콘 선택
-                icon_char = "✡" if mode == 'ac' else "❤" # 하트나 책
+                icon_char = "📚" if mode == 'ac' else "❤︎" # 하트나 책
                 
                 # 좌표: 채워진 바의 오른쪽 끝
                 # 약간 겹치게(왼쪽으로) 혹은 바로 옆에(오른쪽으로)
@@ -161,7 +163,9 @@ class handler(BaseHTTPRequestHandler):
                 # 그리기 (색상은 흰색이나 눈에 띄는 색)
                 # 이모지가 폰트 미지원으로 깨질 수 있으니, 안전하게는 '●' 같은 특수문자 추천
                 # 여기선 일단 요청하신 이모지로 시도
-                draw.text((icon_x, icon_y), icon_char, font=font_rel, fill="white")
+                for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+                    draw.text((tx+dx, ty+dy), info_text, font=font_icon, fill="black")
+                draw.text((icon_x, icon_y), icon_char, font=font_icon, fill="white")
 
             # 4. 중앙 텍스트 (기존 점수 표시)
             info_text = f"{score}"
