@@ -88,8 +88,8 @@ class handler(BaseHTTPRequestHandler):
         # ★ 예쁜 게이지 그리기 함수 (Rounded + Glossy)
         # ==========================================================
         def draw_gauge(start_x, start_y, score, mode='ac'):
-            bar_w = 480
-            bar_h = 40
+            bar_w = 450
+            bar_h = 50
             corner_r = 10 # 모서리 둥글기 반지름
             
             abs_score = abs(score)
@@ -187,8 +187,6 @@ class handler(BaseHTTPRequestHandler):
         line_height = 66    # 줄간격 66
 
         for line in lines:
-            for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-                draw.text((text_x+dx, text_y+dy), line, font=font_main, fill="black")
             draw.text((text_x, text_y), line, font=font_main, fill=text_color)
             text_y += line_height
 
