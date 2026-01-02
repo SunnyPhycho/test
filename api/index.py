@@ -58,7 +58,7 @@ class handler(BaseHTTPRequestHandler):
         # 폰트 로드 (대사 / 게이지 별도 분리)
         try:
             font_main = ImageFont.truetype(font_path01, 60) # 대사 폰트 크기 60
-            font_rel = ImageFont.truetype(font_path02, 16)  # 게이지 폰트 크기 16
+            font_rel = ImageFont.truetype(font_path02, 32)  # 게이지 폰트 크기 16
         except:
             font_main = ImageFont.load_default()
             font_rel = ImageFont.load_default()
@@ -127,11 +127,11 @@ class handler(BaseHTTPRequestHandler):
                 pr_score = int(parts[1])
                 
                 # 좌표 조정 (대사 위쪽)
-                gauge_y = 600
-                gauge_x = 50
+                gauge_y = 650
+                gauge_x = 880
                 
                 draw_gauge(gauge_x, gauge_y, ac_score, 'ac')
-                draw_gauge(gauge_x, gauge_y+45, pr_score, 'pr')
+                draw_gauge(gauge_x, gauge_y+60, pr_score, 'pr')
             except:
                 pass
 
