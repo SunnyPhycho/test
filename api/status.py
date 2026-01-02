@@ -143,7 +143,7 @@ class handler(BaseHTTPRequestHandler):
         
         if sch_data:
             # 1) 요일 이름이 시작할 X좌표 (왼쪽 정렬 기준)
-            left_align_x = 840
+            left_align_x = 790
             
             # 2) 과목 목록이 끝날 X좌표 (오른쪽 정렬 기준)
             # 전체 너비가 1200이고, 깃털 장식 고려하여 1150 정도를 끝으로 설정
