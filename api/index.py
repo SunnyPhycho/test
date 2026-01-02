@@ -63,7 +63,7 @@ class handler(BaseHTTPRequestHandler):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, config['file'])
         font_path01 = os.path.join(current_dir, 'yuna.ttf')
-        font_path02 = os.path.join(current_dir, 'font.ttf')
+        font_path02 = os.path.join(current_dir, 'HLB.ttf')
 
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
@@ -170,8 +170,8 @@ class handler(BaseHTTPRequestHandler):
             ty = start_y + (bar_h - 30) // 2 # 중앙 정렬 보정 (폰트크기 고려)
             
             for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="black")
-            draw.text((tx, ty), info_text, font=font_rel, fill="white")
+                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="white")
+            draw.text((tx, ty), info_text, font=font_rel, fill="black")
 
         # ==========================================================
         # 호감도 그리기
