@@ -24,11 +24,28 @@ ASSETS = {
 }
 
 # ==========================================
-# 색상 팔레트 정의
+# 색상 팔레트 정의 (동화풍 파스텔 톤)
 # ==========================================
-PALETTE_ACADEMIC = ['#D3D3D3', '#87CEEB', '#1E90FF', '#000080', '#FFD700'] 
-PALETTE_PERSONAL = ['#D3D3D3', '#FFB6C1', '#FF69B4', '#DC143C', '#8A2BE2'] 
-PALETTE_NEGATIVE = ['#A9A9A9', '#696969', '#5D4037', '#800000', '#000000'] 
+
+# [학문] 지성, 탐구, 빛 (노랑 -> 주황 -> 빨강 계열)
+# 0~20: Cream (부드러운 크림색)
+# 20~40: Butter (따뜻한 버터색)
+# 40~60: Apricot (살구색)
+# 60~80: Coral (산호색)
+# 80~100: Sunset (강렬한 노을색)
+PALETTE_ACADEMIC = ['#FFFACD', '#FFD700', '#FFB347', '#FF7F50', '#FF4500']
+
+# [사적] 애정, 설렘, 무드 (분홍 -> 보라 계열)
+# 0~20: Misty Rose (안개 낀 장미)
+# 20~40: Pink (베이비 핑크)
+# 40~60: Hot Pink (진분홍)
+# 60~80: Orchid (연보라)
+# 80~100: Plum (자두색)
+PALETTE_PERSONAL = ['#FFE4E1', '#FFB6C1', '#FF69B4', '#DA70D6', '#DDA0DD']
+
+# [마이너스] 혐오, 오해, 차가움 (회색 -> 검정 계열)
+# 점점 색이 빠지고 차가워지는 느낌
+PALETTE_NEGATIVE = ['#F0F8FF', '#B0C4DE', '#778899', '#4B0082', '#000000'] 
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -46,7 +63,7 @@ class handler(BaseHTTPRequestHandler):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, config['file'])
         font_path01 = os.path.join(current_dir, 'yuna.ttf')
-        font_path02 = os.path.join(current_dir, 'HLR.ttf')
+        font_path02 = os.path.join(current_dir, 'font.ttf')
 
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
@@ -58,7 +75,7 @@ class handler(BaseHTTPRequestHandler):
         # 폰트 로드 (대사 / 게이지 별도 분리)
         try:
             font_main = ImageFont.truetype(font_path01, 60) # 대사 폰트 크기 60
-            font_rel = ImageFont.truetype(font_path02, 32)  # 게이지 폰트 크기 16
+            font_rel = ImageFont.truetype(font_path02, 24)  # 게이지 폰트 크기 16
         except:
             font_main = ImageFont.load_default()
             font_rel = ImageFont.load_default()
