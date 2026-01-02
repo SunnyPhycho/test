@@ -128,7 +128,7 @@ class handler(BaseHTTPRequestHandler):
                 
                 # 좌표 조정 (대사 위쪽)
                 gauge_y = 650
-                gauge_x = 880
+                gauge_x = 820
                 
                 draw_gauge(gauge_x, gauge_y, ac_score, 'ac')
                 draw_gauge(gauge_x, gauge_y+60, pr_score, 'pr')
