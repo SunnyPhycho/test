@@ -163,9 +163,7 @@ class handler(BaseHTTPRequestHandler):
                 # 그리기 (색상은 흰색이나 눈에 띄는 색)
                 # 이모지가 폰트 미지원으로 깨질 수 있으니, 안전하게는 '●' 같은 특수문자 추천
                 # 여기선 일단 요청하신 이모지로 시도
-                for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-                    draw.text((tx+dx, ty+dy), info_text, font=font_icon, fill="black")
-                draw.text((icon_x, icon_y), icon_char, font=font_icon, fill="white")
+                draw.text((icon_x, icon_y), icon_char, font=font_icon, fill="black")
 
             # 4. 중앙 텍스트 (기존 점수 표시)
             info_text = f"{score}"
