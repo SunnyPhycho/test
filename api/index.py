@@ -70,9 +70,9 @@ class handler(BaseHTTPRequestHandler):
         # ==========================================================
         # 게이지 그리기 함수
         # ==========================================================
-        def draw_gauge(start_x, start_y, score, label, mode='ac'):
-            bar_w = 120
-            bar_h = 18 # 높이 약간 키움
+        def draw_gauge(start_x, start_y, score, mode='ac'):
+            bar_w = 480
+            bar_h = 40
             
             abs_score = abs(score)
             tier = min(int(abs_score // 20), 4)
@@ -108,7 +108,7 @@ class handler(BaseHTTPRequestHandler):
                 draw.rectangle([(start_x, start_y), (start_x + fill_w, start_y + bar_h)], fill=fg_color)
             
             # 게이지 텍스트 (font_rel 사용)
-            info_text = f"{label} {score}"
+            info_text = f"{score}"
             text_w = font_rel.getlength(info_text)
             tx = start_x + (bar_w - text_w) // 2
             ty = start_y - 2 
@@ -130,8 +130,8 @@ class handler(BaseHTTPRequestHandler):
                 gauge_y = 600
                 gauge_x = 50
                 
-                draw_gauge(gauge_x, gauge_y, ac_score, "학문", 'ac')
-                draw_gauge(gauge_x, gauge_y+22, pr_score, "사감", 'pr')
+                draw_gauge(gauge_x, gauge_y, ac_score, 'ac')
+                draw_gauge(gauge_x, gauge_y+45, pr_score, 'pr')
             except:
                 pass
 
