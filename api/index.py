@@ -157,8 +157,8 @@ class handler(BaseHTTPRequestHandler):
                 
                 # 좌표: 채워진 바의 오른쪽 끝
                 # 약간 겹치게(왼쪽으로) 혹은 바로 옆에(오른쪽으로)
-                icon_x = start_x + fill_w - 8 # 바 끝에 걸치게
-                icon_y = start_y - 6 # 바보다 살짝 위로 튀어나오게
+                icon_x = start_x + fill_w # 바 끝에 걸치게
+                icon_y = start_y # 바보다 살짝 위로 튀어나오게
                 
                 # 그리기 (색상은 흰색이나 눈에 띄는 색)
                 # 이모지가 폰트 미지원으로 깨질 수 있으니, 안전하게는 '●' 같은 특수문자 추천
