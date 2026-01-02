@@ -64,7 +64,7 @@ class handler(BaseHTTPRequestHandler):
         image_path = os.path.join(current_dir, config['file'])
         font_path01 = os.path.join(current_dir, 'yuna.ttf')
         font_path02 = os.path.join(current_dir, 'HLB.ttf')
-        font_path03 = os.path.join(current_dir, 'NEB.ttf')
+        font_path03 = os.path.join(current_dir, 'NCE.ttf')
 
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
@@ -153,11 +153,11 @@ class handler(BaseHTTPRequestHandler):
             # 채워진 너비(fill_w)가 있으면 그 끝에 아이콘 표시
             if fill_w > 0:
                 # 아이콘 선택
-                icon_char = "📚" if mode == 'ac' else "❤︎" # 하트나 책
+                icon_char = "📚" if mode == 'ac' else "♥" # 하트나 책
                 
                 # 좌표: 채워진 바의 오른쪽 끝
                 # 약간 겹치게(왼쪽으로) 혹은 바로 옆에(오른쪽으로)
-                icon_x = start_x + fill_w # 바 끝에 걸치게
+                icon_x = start_x + fill_w - 20 # 바 끝에 걸치게
                 icon_y = start_y # 바보다 살짝 위로 튀어나오게
                 
                 # 그리기 (색상은 흰색이나 눈에 띄는 색)
