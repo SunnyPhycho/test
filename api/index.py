@@ -120,7 +120,7 @@ class handler(BaseHTTPRequestHandler):
                     fill_ratio = (abs_score % 20) / 20.0
             
             # 1. 배경 (둥근 사각형)
-            draw.rounded_rectangle([(start_x, start_y), (start_x + bar_w, start_y + bar_h)], radius=corner_r, fill=bg_color, outline='NONE', width=2)
+            draw.rounded_rectangle([(start_x, start_y), (start_x + bar_w, start_y + bar_h)], radius=corner_r, fill=bg_color, outline=bg_color, width=2)
             
             # 2. 채움 바 (둥근 사각형 + 마스크 처리)
             # 채워지는 부분도 둥글게 보여야 하므로 별도 이미지로 그려서 합성하거나
