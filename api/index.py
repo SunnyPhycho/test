@@ -147,17 +147,11 @@ class handler(BaseHTTPRequestHandler):
                      # 100%일 때
                      draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
 
-            # 3. ★ 광택 효과 (Glossy Highlight)
-            # 상단 40% 영역에 반투명 흰색을 칠함
-            # PIL draw에는 알파 채널 직접 그리기가 안되므로 별도 레이어 합성 필요
-            # (속도를 위해 생략하거나, 옅은 흰색 선으로 대체)
-            draw.line([(start_x + corner_r, start_y + 5), (start_x + bar_w - corner_r, start_y + 5)], fill='#FFFFFF44', width=2) # 윗부분 하이라이트 선
-
-            # ★ 4. 경계선 아이콘 (슬라이더)
+            # 3. ★ 경계선 아이콘 (슬라이더)
             # 채워진 너비(fill_w)가 있으면 그 끝에 아이콘 표시
             if fill_w > 0:
                 # 아이콘 선택
-                icon_char = "📚" if mode == 'ac' else "❣️" # 하트나 책
+                icon_char = "❂" if mode == 'ac' else "❦" # 하트나 책
                 
                 # 좌표: 채워진 바의 오른쪽 끝
                 # 약간 겹치게(왼쪽으로) 혹은 바로 옆에(오른쪽으로)
@@ -169,7 +163,7 @@ class handler(BaseHTTPRequestHandler):
                 # 여기선 일단 요청하신 이모지로 시도
                 draw.text((icon_x, icon_y), icon_char, font=font_rel, fill="white")
 
-            # 5. 중앙 텍스트 (기존 점수 표시)
+            # 4. 중앙 텍스트 (기존 점수 표시)
             info_text = f"{score}"
             text_w = font_rel.getlength(info_text)
             tx = start_x + (bar_w - text_w) // 2
