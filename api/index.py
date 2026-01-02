@@ -151,7 +151,7 @@ class handler(BaseHTTPRequestHandler):
             # 채워진 너비(fill_w)가 있으면 그 끝에 아이콘 표시
             if fill_w > 0:
                 # 아이콘 선택
-                icon_char = "❂" if mode == 'ac' else "❦" # 하트나 책
+                icon_char = "✡" if mode == 'ac' else "❤" # 하트나 책
                 
                 # 좌표: 채워진 바의 오른쪽 끝
                 # 약간 겹치게(왼쪽으로) 혹은 바로 옆에(오른쪽으로)
