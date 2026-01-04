@@ -9,17 +9,17 @@ import textwrap
 # 캐릭터 설정 (좌표 y=100)
 # ==========================================
 ASSETS = {
-    '류아': {'file': 'A.png', 'x': 600, 'y': 100, 'color': 'black'},
-    '류안': {'file': 'B.png', 'x': 600, 'y': 100, 'color': 'black'},  
-    '에이드리안': {'file': 'C.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '서연': {'file': 'D.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '유진': {'file': 'E.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '로완': {'file': 'R.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '빈':   {'file': 'V.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '소렌': {'file': 'S.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '제브릭': {'file': 'Z.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '라스': {'file': 'L.png', 'x': 600, 'y': 100, 'color': 'white'},  
-    '페이': {'file': 'P.png', 'x': 600, 'y': 100, 'color': 'black'},  
+    '류아': {'file': 'A.png', 'x': 600, 'y': 300, 'color': 'black'},
+    '류안': {'file': 'B.png', 'x': 600, 'y': 300, 'color': 'black'},  
+    '에이드리안': {'file': 'C.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '서연': {'file': 'D.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '유진': {'file': 'E.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '로완': {'file': 'R.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '빈':   {'file': 'V.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '소렌': {'file': 'S.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '제브릭': {'file': 'Z.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '라스': {'file': 'L.png', 'x': 600, 'y': 300, 'color': 'white'},  
+    '페이': {'file': 'P.png', 'x': 600, 'y': 300, 'color': 'black'},  
     'default': {'file': 'hud_bg.png', 'x': 50, 'y': 50, 'color': 'white'}
 }
 
@@ -83,7 +83,13 @@ class handler(BaseHTTPRequestHandler):
             font_rel = ImageFont.load_default()
 
         text_x = config['x']
-        text_y = config['y']
+        # [수정 전]
+        # text_y = config['y'] 
+        
+        # [수정 후] ▼ 아래 코드로 교체하세요
+        center_y = config['y'] # 설정된 Y좌표를 중앙점으로 인식
+        total_text_height = len(lines) * line_height # 전체 텍스트 높이 계산
+        text_y = center_y - (total_text_height // 2) # 시작 Y좌표 = 중앙 - (높이/2)
         text_color = config['color']
 
         # ==========================================================
