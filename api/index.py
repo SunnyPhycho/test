@@ -149,34 +149,45 @@ class handler(BaseHTTPRequestHandler):
                      # 100%일 때
                      draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
 
-            # ... (배경 및 채움 사각형 그리기 완료 후) ...
-
-            # ★ 3. 경계선 아이콘 (슬라이더 손잡이)
+            # ★ 4. 경계선 아이콘 (커스텀 색상 조합)
             if fill_w > 0:
-                # 1) 아이콘 모양 결정
-                # 학문=별(★), 사적=하트(♥), 마이너스=해골대신 엑스(X)나 마름모(◆)
-                if score < 0:
-                    icon_char = "💀" 
-                    icon_color = "#555555" # 어두운 회색
-                elif mode == 'ac':
-                    icon_char = "📚" 
-                    icon_color = "#FFD700" # 황금색 (학문)
+                # 기본값
+                icon_char = ""
+                fill_color = "white"
+                outline_color = "black"
+
+                # 1) 모드 및 점수에 따른 색상/아이콘 결정
+                if score >= 0:
+                    # 양수 (+)
+                    if mode == 'ac':
+                        icon_char = "📚"
+                        fill_color = "#FFD700"   # 금색
+                        outline_color = "#4169E1" # 로얄블루
+                    else:
+                        icon_char = "❣️"
+                        fill_color = "#FF7F50"   # 산호색
+                        outline_color = "#B76E79" # 로즈골드
                 else:
-                    icon_char = "❣️" 
-                    icon_color = "#FF69B4" # 핫핑크 (사적)
+                    # 음수 (-)
+                    icon_char = "⚠️" # 혹은 깨진하트/책 등
+                    fill_color = "black" # 내부는 검정 (심연)
+                    if mode == 'ac':
+                        outline_color = "#FFD700" # 노란 경고
+                    else:
+                        outline_color = "#FF0000" # 빨간 경고
 
-                # 2) 좌표 계산 (바 끝부분 중앙에 오도록)
-                # 폰트 크기(font_rel=16) 고려해서 위치 보정
-                icon_x = start_x + fill_w - 20  # 바 끝에 걸치게
-                icon_y = start_y - 2           # 바 높이 중앙
+                # 2) 좌표 (바 끝에 걸치게)
+                icon_x = start_x + fill_w - 20
+                icon_y = start_y - 4
 
-                # 3) 그리기 (외곽선 + 본문)
-                # 외곽선(검정)을 그려주면 배경색과 겹쳐도 잘 보임
+                # 3) 그리기 (외곽선 먼저 -> 내부 채우기)
+                # 외곽선 (Outline)
                 for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-                    draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_rel, fill="black")
+                    draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_rel, fill=outline_color)
                 
-                # 본문 (설정된 아이콘 색상)
-                draw.text((icon_x, icon_y), icon_char, font=font_rel, fill=icon_color)
+                # 내부 (Fill)
+                draw.text((icon_x, icon_y), icon_char, font=font_rel, fill=fill_color)
+            
             # 4. 중앙 텍스트 (기존 점수 표시)
             info_text = f"{score}"
             text_w = font_rel.getlength(info_text)
