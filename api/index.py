@@ -193,7 +193,7 @@ class handler(BaseHTTPRequestHandler):
                         fill_color = "#FF0000" # 빨간 경고
 
                 # 2) 좌표 (바 끝에 걸치게)
-                icon_x = start_x + fill_w - 20
+                icon_x = start_x - 20
                 icon_y = start_y
 
                 # 3) 그리기 (외곽선 먼저 -> 내부 채우기)
