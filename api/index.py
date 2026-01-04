@@ -194,9 +194,9 @@ class handler(BaseHTTPRequestHandler):
             tx = start_x + (bar_w - text_w) // 2
             ty = start_y + (bar_h - 30) // 2 # 중앙 정렬 보정 (폰트크기 고려)
             
-            for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="white")
-            draw.text((tx, ty), info_text, font=font_rel, fill="black")
+            for dx, dy in [(-2,0), (2,0), (0,-2), (0,2)]:
+                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="black")
+            draw.text((tx, ty), info_text, font=font_rel, fill="white")
 
         # ==========================================================
         # 호감도 그리기
