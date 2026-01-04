@@ -165,16 +165,16 @@ class handler(BaseHTTPRequestHandler):
                         outline_color = "#FFD700" # 로얄블루
                     else:
                         icon_char = "❣️"
-                        fill_color = "#FF4400"   # 산호색
+                        fill_color = "#FF1100"   # 산호색
                         outline_color = "#FFEDF4" # 로즈골드
                 else:
                     # 음수 (-)
                     icon_char = "🫟" # 혹은 깨진하트/책 등
-                    fill_color = "black" # 내부는 검정 (심연)
+                    outline_color = "black" # 내부는 검정 (심연)
                     if mode == 'ac':
-                        outline_color = "#FFD700" # 노란 경고
+                        fill_color = "#FFD700" # 노란 경고
                     else:
-                        outline_color = "#FF0000" # 빨간 경고
+                        fill_color = "#FF0000" # 빨간 경고
 
                 # 2) 좌표 (바 끝에 걸치게)
                 icon_x = start_x + fill_w - 20
