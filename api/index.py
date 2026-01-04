@@ -164,7 +164,7 @@ class handler(BaseHTTPRequestHandler):
                         fill_color = "#4169E1"   # 금색
                         outline_color = "#FFD700" # 로얄블루
                     else:
-                        icon_char = "❣️"
+                        icon_char = "❤"
                         fill_color = "#FF1100"   # 산호색
                         outline_color = "#FFEDF4" # 로즈골드
                 else:
@@ -195,8 +195,8 @@ class handler(BaseHTTPRequestHandler):
             ty = start_y + (bar_h - 30) // 2 # 중앙 정렬 보정 (폰트크기 고려)
             
             for dx, dy in [(-2,0), (2,0), (0,-2), (0,2)]:
-                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="black")
-            draw.text((tx, ty), info_text, font=font_rel, fill="white")
+                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="white")
+            draw.text((tx, ty), info_text, font=font_rel, fill="black")
 
         # ==========================================================
         # 호감도 그리기
