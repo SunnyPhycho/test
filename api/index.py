@@ -82,14 +82,24 @@ class handler(BaseHTTPRequestHandler):
             font_main = ImageFont.load_default()
             font_rel = ImageFont.load_default()
 
+        # ... (폰트 로드 try-except 블록 직후) ...
+
         text_x = config['x']
-        # [수정 전]
-        # text_y = config['y'] 
+        text_color = config['color']
         
-        # [수정 후] ▼ 아래 코드로 교체하세요
-        center_y = config['y'] # 설정된 Y좌표를 중앙점으로 인식
-        total_text_height = len(lines) * line_height # 전체 텍스트 높이 계산
-        text_y = center_y - (total_text_height // 2) # 시작 Y좌표 = 중앙 - (높이/2)
+        # ==========================================
+        # [수정 1] 변수 정의 순서 변경 (크래시 방지)
+        # ==========================================
+        max_text_width = 23
+        line_height = 66
+        
+        # 텍스트를 먼저 줄바꿈 처리해야 높이를 계산할 수 있습니다.
+        lines = textwrap.wrap(text_input, width=max_text_width)
+        
+        # 이제 lines가 정의되었으므로 계산 가능
+        center_y = config['y']
+        total_text_height = len(lines) * line_height
+        text_y = center_y - (total_text_height // 2)
         text_color = config['color']
 
         # ==========================================================
@@ -221,12 +231,7 @@ class handler(BaseHTTPRequestHandler):
             except:
                 pass
 
-
         # 5. 대사 그리기 (사용자 커스텀 반영: 외곽선 제거, 중앙 정렬)
-        max_text_width = 23
-        lines = textwrap.wrap(text_input, width=max_text_width)
-        line_height = 66
-
         current_y = text_y
 
         for line in lines:
