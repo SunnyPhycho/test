@@ -116,8 +116,7 @@ class handler(BaseHTTPRequestHandler):
         lines = textwrap.wrap(text_input, width=max_text_width)
         line_height = 66
 
-        # ★ 중앙 정렬 시작점 가져오기
-        current_y = text_start_y 
+        current_y = text_y
 
         for line in lines:
             # 외곽선 없이 본문만 그림
