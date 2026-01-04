@@ -93,118 +93,6 @@ class handler(BaseHTTPRequestHandler):
         text_color = config['color']
 
         # ==========================================================
-        # ★ 예쁜 게이지 그리기 함수 (Rounded + Glossy)
-        # ==========================================================
-        def draw_gauge(start_x, start_y, score, mode='ac'):
-            bar_w = 450
-            bar_h = 50
-            corner_r = 10 # 모서리 둥글기 반지름
-            
-            abs_score = abs(score)
-            tier = min(int(abs_score // 20), 4)
-            
-            if score >= 0:
-                colors = PALETTE_ACADEMIC if mode == 'ac' else PALETTE_PERSONAL
-            else:
-                colors = PALETTE_NEGATIVE
-
-            if abs_score == 0:
-                bg_color = "#333333"
-                fg_color = colors[0]
-                fill_ratio = 0
-            else:
-                if tier == 0:
-                    bg_color = "#333333"
-                    fg_color = colors[0]
-                else:
-                    bg_color = colors[tier - 1]
-                    fg_color = colors[tier]
-                
-                if abs_score % 20 == 0 and abs_score > 0:
-                    bg_color = colors[min(tier - 1, 3)] 
-                    fg_color = colors[min(tier, 4)]
-                    fill_ratio = 1.0
-                else:
-                    fill_ratio = (abs_score % 20) / 20.0
-            
-            # 1. 배경 (둥근 사각형)
-            draw.rounded_rectangle([(start_x, start_y), (start_x + bar_w, start_y + bar_h)], radius=corner_r, fill=bg_color, outline=bg_color, width=2)
-            
-            # 2. 채움 바 (둥근 사각형 + 마스크 처리)
-            # 채워지는 부분도 둥글게 보여야 하므로 별도 이미지로 그려서 합성하거나
-            # 간단하게는 그냥 둥근 사각형을 그리되, 꽉 찼을 때만 둥글게 처리
-            # (복잡한 마스킹 없이 "채워지는 막대"를 그립니다)
-            
-            fill_w = int(bar_w * fill_ratio)
-            if fill_w > 0:
-                # 너무 짧으면 둥근게 깨지므로 최소 너비 보정
-                safe_w = max(fill_w, corner_r * 2) 
-                
-                # 채움 영역의 좌표
-                fill_box = [(start_x+2, start_y+2), (start_x + fill_w - 2, start_y + bar_h - 2)]
-                
-                # 100%가 아니면 오른쪽 끝은 직각이어야 자연스럽지만,
-                # 코드로 간단히 구현하기 위해 그냥 둥근 사각형으로 채웁니다.
-                # (오버레이 방식이라 크게 어색하지 않음)
-                if fill_w < bar_w:
-                     # 꽉 안 찼을 때는 왼쪽만 둥글게 그리기 어려우니 
-                     # 그냥 일반 사각형 그리고 왼쪽 둥근 부분은 덧칠하는 꼼수 대신
-                     # 심플하게 내부를 꽉 채우는 둥근 사각형을 그립니다.
-                     draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
-                else:
-                     # 100%일 때
-                     draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
-
-            # ★ 4. 경계선 아이콘 (커스텀 색상 조합)
-            if fill_w > 0:
-                # 기본값
-                icon_char = ""
-                fill_color = "white"
-                outline_color = "black"
-
-                # 1) 모드 및 점수에 따른 색상/아이콘 결정
-                if score >= 0:
-                    # 양수 (+)
-                    if mode == 'ac':
-                        icon_char = "📚"
-                        fill_color = "#4169E1"   # 금색
-                        outline_color = "#FFD700" # 로얄블루
-                    else:
-                        icon_char = "❤"
-                        fill_color = "#FFEDF4"   # 산호색
-                        outline_color = "#FF1100" # 로즈골드
-                else:
-                    # 음수 (-)
-                    icon_char = "🫟" # 혹은 깨진하트/책 등
-                    outline_color = "black" # 내부는 검정 (심연)
-                    if mode == 'ac':
-                        fill_color = "#FFD700" # 노란 경고
-                    else:
-                        fill_color = "#FF0000" # 빨간 경고
-
-                # 2) 좌표 (바 끝에 걸치게)
-                icon_x = start_x + fill_w - 20
-                icon_y = start_y
-
-                # 3) 그리기 (외곽선 먼저 -> 내부 채우기)
-                # 외곽선 (Outline)
-                for dx, dy in [(-2,0), (2,0), (0,-2), (0,2)]:
-                    draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_icon, fill=outline_color)
-                
-                # 내부 (Fill)
-                draw.text((icon_x, icon_y), icon_char, font=font_icon, fill=fill_color)
-            
-            # 4. 중앙 텍스트 (기존 점수 표시)
-            info_text = f"{score}"
-            text_w = font_rel.getlength(info_text)
-            tx = start_x + (bar_w - text_w) // 2
-            ty = start_y + (bar_h - 30) // 2 # 중앙 정렬 보정 (폰트크기 고려)
-            
-            for dx, dy in [(-2,0), (2,0), (0,-2), (0,2)]:
-                draw.text((tx+dx, ty+dy), info_text, font=font_rel, fill="white")
-            draw.text((tx, ty), info_text, font=font_rel, fill="black")
-
-        # ==========================================================
         # 호감도 그리기
         # ==========================================================
         if rel_input and ':' in rel_input:
@@ -228,7 +116,7 @@ class handler(BaseHTTPRequestHandler):
         line_height = 66    # 줄간격 66
 
         for line in lines:
-            draw.text((text_x, text_y), line, font=font_main, fill=text_color)
+            draw.text((text_x, current_y), line, font=font_main, fill=text_color)
             text_y += line_height
 
         img_byte_arr = io.BytesIO()
