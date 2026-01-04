@@ -182,7 +182,7 @@ class handler(BaseHTTPRequestHandler):
 
                 # 3) 그리기 (외곽선 먼저 -> 내부 채우기)
                 # 외곽선 (Outline)
-                for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+                for dx, dy in [(-4,0), (4,0), (0,-4), (0,4)]:
                     draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_icon, fill=outline_color)
                 
                 # 내부 (Fill)
