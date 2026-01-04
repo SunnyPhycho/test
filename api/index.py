@@ -178,15 +178,15 @@ class handler(BaseHTTPRequestHandler):
 
                 # 2) 좌표 (바 끝에 걸치게)
                 icon_x = start_x + fill_w - 20
-                icon_y = start_y - 4
+                icon_y = start_y
 
                 # 3) 그리기 (외곽선 먼저 -> 내부 채우기)
                 # 외곽선 (Outline)
                 for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-                    draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_rel, fill=outline_color)
+                    draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_icon, fill=outline_color)
                 
                 # 내부 (Fill)
-                draw.text((icon_x, icon_y), icon_char, font=font_rel, fill=fill_color)
+                draw.text((icon_x, icon_y), icon_char, font=font_icon, fill=fill_color)
             
             # 4. 중앙 텍스트 (기존 점수 표시)
             info_text = f"{score}"
