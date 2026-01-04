@@ -45,7 +45,7 @@ PALETTE_PERSONAL = ['#FFF0F3', '#FFCCD5', '#FF8FA3', '#FF4D6D', '#A4133C']
 
 # [마이너스] 혐오, 오해, 차가움 (회색 -> 검정 계열)
 # 점점 색이 빠지고 차가워지는 느낌
-PALETTE_NEGATIVE = ['#F0F8FF', '#B0C4DE', '#778899', '#4B0082', '#000000'] 
+PALETTE_NEGATIVE = ['#EDEDED', '#BFBFBF', '#7D7D7D', '#474747', '#000000'] 
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -161,12 +161,12 @@ class handler(BaseHTTPRequestHandler):
                     # 양수 (+)
                     if mode == 'ac':
                         icon_char = "📚"
-                        fill_color = "#FFD700"   # 금색
-                        outline_color = "#4169E1" # 로얄블루
+                        fill_color = "#4169E1"   # 금색
+                        outline_color = "#FFD700" # 로얄블루
                     else:
                         icon_char = "❣️"
-                        fill_color = "#FF7F50"   # 산호색
-                        outline_color = "#B76E79" # 로즈골드
+                        fill_color = "#FF4400"   # 산호색
+                        outline_color = "#FFEDF4" # 로즈골드
                 else:
                     # 음수 (-)
                     icon_char = "🫟" # 혹은 깨진하트/책 등
