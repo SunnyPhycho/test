@@ -165,8 +165,8 @@ class handler(BaseHTTPRequestHandler):
                         outline_color = "#FFD700" # 로얄블루
                     else:
                         icon_char = "❤"
-                        fill_color = "#FF1100"   # 산호색
-                        outline_color = "#FFEDF4" # 로즈골드
+                        fill_color = "#FFEDF4"   # 산호색
+                        outline_color = "#FF1100" # 로즈골드
                 else:
                     # 음수 (-)
                     icon_char = "🫟" # 혹은 깨진하트/책 등
