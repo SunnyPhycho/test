@@ -169,7 +169,7 @@ class handler(BaseHTTPRequestHandler):
                         outline_color = "#B76E79" # 로즈골드
                 else:
                     # 음수 (-)
-                    icon_char = "⚠️" # 혹은 깨진하트/책 등
+                    icon_char = "🫟" # 혹은 깨진하트/책 등
                     fill_color = "black" # 내부는 검정 (심연)
                     if mode == 'ac':
                         outline_color = "#FFD700" # 노란 경고
