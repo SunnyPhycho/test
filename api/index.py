@@ -166,7 +166,7 @@ class handler(BaseHTTPRequestHandler):
                      draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
 
             # ★ 4. 경계선 아이콘 (커스텀 색상 조합)
-            if fill_w > 0:
+            if fill_w >= 0:
                 # 기본값
                 icon_char = ""
                 fill_color = "white"
