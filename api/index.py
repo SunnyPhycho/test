@@ -33,7 +33,7 @@ ASSETS = {
 # 40~60: Apricot (살구색)
 # 60~80: Coral (산호색)
 # 80~100: Sunset (강렬한 노을색)
-PALETTE_ACADEMIC = ['#FFFACD', '#FFD700', '#FFB347', '#FF7F50', '#FF4500']
+PALETTE_ACADEMIC = ['#F0F4F8', '#D9E2EC', '#9FB3C8', '#486581', '#102A43']
 
 # [사적] 애정, 설렘, 무드 (분홍 -> 보라 계열)
 # 0~20: Misty Rose (안개 낀 장미)
@@ -41,7 +41,7 @@ PALETTE_ACADEMIC = ['#FFFACD', '#FFD700', '#FFB347', '#FF7F50', '#FF4500']
 # 40~60: Hot Pink (진분홍)
 # 60~80: Orchid (연보라)
 # 80~100: Plum (자두색)
-PALETTE_PERSONAL = ['#FFE4E1', '#FFB6C1', '#FF69B4', '#DA70D6', '#DDA0DD']
+PALETTE_PERSONAL = ['#FFF0F3', '#FFCCD5', '#FF8FA3', '#FF4D6D', '#A4133C']
 
 # [마이너스] 혐오, 오해, 차가움 (회색 -> 검정 계열)
 # 점점 색이 빠지고 차가워지는 느낌
