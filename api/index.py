@@ -110,14 +110,21 @@ class handler(BaseHTTPRequestHandler):
             except:
                 pass
 
-        # 대사 그리기 (수정된 설정 반영)
-        max_text_width = 23 # 글자수 23
+
+        # 5. 대사 그리기 (사용자 커스텀 반영: 외곽선 제거, 중앙 정렬)
+        max_text_width = 23
         lines = textwrap.wrap(text_input, width=max_text_width)
-        line_height = 66    # 줄간격 66
+        line_height = 66
+
+        # ★ 중앙 정렬 시작점 가져오기
+        current_y = text_start_y 
 
         for line in lines:
+            # 외곽선 없이 본문만 그림
             draw.text((text_x, current_y), line, font=font_main, fill=text_color)
-            text_y += line_height
+            
+            # ★ 수정됨: text_y가 아니라 current_y를 증가시켜야 함
+            current_y += line_height
 
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
