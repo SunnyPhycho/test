@@ -64,7 +64,7 @@ class handler(BaseHTTPRequestHandler):
         image_path = os.path.join(current_dir, config['file'])
         font_path01 = os.path.join(current_dir, 'yuna.ttf')
         font_path02 = os.path.join(current_dir, 'HLB.ttf')
-        font_path03 = os.path.join(current_dir, 'NCE.ttf')
+        font_path03 = os.path.join(current_dir, 'NEB.ttf')
 
         if os.path.exists(image_path):
             img = Image.open(image_path).convert("RGBA")
@@ -149,22 +149,34 @@ class handler(BaseHTTPRequestHandler):
                      # 100%일 때
                      draw.rounded_rectangle(fill_box, radius=corner_r-2, fill=fg_color)
 
-            # 3. ★ 경계선 아이콘 (슬라이더)
-            # 채워진 너비(fill_w)가 있으면 그 끝에 아이콘 표시
-            if fill_w > 0:
-                # 아이콘 선택
-                icon_char = "📚" if mode == 'ac' else "♥" # 하트나 책
-                
-                # 좌표: 채워진 바의 오른쪽 끝
-                # 약간 겹치게(왼쪽으로) 혹은 바로 옆에(오른쪽으로)
-                icon_x = start_x + fill_w - 20 # 바 끝에 걸치게
-                icon_y = start_y # 바보다 살짝 위로 튀어나오게
-                
-                # 그리기 (색상은 흰색이나 눈에 띄는 색)
-                # 이모지가 폰트 미지원으로 깨질 수 있으니, 안전하게는 '●' 같은 특수문자 추천
-                # 여기선 일단 요청하신 이모지로 시도
-                draw.text((icon_x, icon_y), icon_char, font=font_icon)
+            # ... (배경 및 채움 사각형 그리기 완료 후) ...
 
+            # ★ 3. 경계선 아이콘 (슬라이더 손잡이)
+            if fill_w > 0:
+                # 1) 아이콘 모양 결정
+                # 학문=별(★), 사적=하트(♥), 마이너스=해골대신 엑스(X)나 마름모(◆)
+                if score < 0:
+                    icon_char = "💀" 
+                    icon_color = "#555555" # 어두운 회색
+                elif mode == 'ac':
+                    icon_char = "📚" 
+                    icon_color = "#FFD700" # 황금색 (학문)
+                else:
+                    icon_char = "❣️" 
+                    icon_color = "#FF69B4" # 핫핑크 (사적)
+
+                # 2) 좌표 계산 (바 끝부분 중앙에 오도록)
+                # 폰트 크기(font_rel=16) 고려해서 위치 보정
+                icon_x = start_x + fill_w - 20  # 바 끝에 걸치게
+                icon_y = start_y - 2           # 바 높이 중앙
+
+                # 3) 그리기 (외곽선 + 본문)
+                # 외곽선(검정)을 그려주면 배경색과 겹쳐도 잘 보임
+                for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+                    draw.text((icon_x+dx, icon_y+dy), icon_char, font=font_rel, fill="black")
+                
+                # 본문 (설정된 아이콘 색상)
+                draw.text((icon_x, icon_y), icon_char, font=font_rel, fill=icon_color)
             # 4. 중앙 텍스트 (기존 점수 표시)
             info_text = f"{score}"
             text_w = font_rel.getlength(info_text)
