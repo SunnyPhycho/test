@@ -56,6 +56,7 @@ class handler(BaseHTTPRequestHandler):
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
         font_path = os.path.join(current_dir, 'font.ttf')
+        font_path02 = os.path.join(current_dir, 'NEB.ttf')
         
         try:
             f_title = ImageFont.truetype(font_path, 40)
@@ -63,13 +64,14 @@ class handler(BaseHTTPRequestHandler):
             f_cmt = ImageFont.truetype(font_path, 28)
             f_small = ImageFont.truetype(font_path, 20)
             f_tag = ImageFont.truetype(font_path, 22)
+            f_emoji = ImageFont.truetype(font_path, 40)
         except:
             f_title = f_body = f_cmt = f_small = f_tag = ImageFont.load_default()
 
         # [헤더]
         draw.rectangle([(0,0), (TOTAL_W, 80)], fill='#C62917')
-        draw.text((20, 20), "ACADEMY-TIMELINE", font=f_title, fill='white')
-        draw.text((TOTAL_W-60, 25), "🔍", font=f_title, fill='white')
+        draw.text((20, 20), "Ether-net", font=f_title, fill='white')
+        draw.text((TOTAL_W-60, 25), "🔍", font=f_emoji, fill='white')
 
         cur_y = 110
         
