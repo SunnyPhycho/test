@@ -38,7 +38,7 @@ class handler(BaseHTTPRequestHandler):
         for bl in body_lines:
             # width는 글자 수 기준이므로 비슷하게 유지하거나 약간 조정
             body_wrapped.extend(textwrap.wrap(bl, width=16)) 
-        body_h = len(body_wrapped) * 80 + 40 # 줄간격 80px
+        body_h = len(body_wrapped) * 80 + 100 # 줄간격 80px
         
         # 댓글
         cmt_wrapped_list = []
