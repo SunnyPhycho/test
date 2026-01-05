@@ -46,9 +46,9 @@ class handler(BaseHTTPRequestHandler):
         for c in comments:
             w_lines = textwrap.wrap(c, width=25)
             cmt_wrapped_list.append(w_lines)
-            cmt_h += 80 + (len(w_lines) * 100) + 100 # 작성자줄 + 본문줄 + 여백
+            cmt_h += 80 + (len(w_lines) * 100) + 400 # 작성자줄 + 본문줄 + 여백
             
-        TOTAL_H = base_h + body_h + cmt_h + 100
+        TOTAL_H = base_h + body_h + cmt_h + 40
         
         # ----------------------------------------------------
         # 3. 그리기 (2x Scale)
