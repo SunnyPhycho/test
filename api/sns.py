@@ -73,8 +73,7 @@ class handler(BaseHTTPRequestHandler):
 
         # [헤더]
         draw.rectangle([(0,0), (TOTAL_W, 160)], fill='#C62917')
-        draw.textfont_path = os.path.join(current_dir, 'font.ttf')
-        ((40, 40), "ETHER-NET", font=f_title, fill='white')
+        draw.text((40, 40), "ETHER-NET", font=f_title, fill='white')
         draw.text((TOTAL_W-120, 50), "🔍", font=f_icon, fill='white')
 
         cur_y = 220
