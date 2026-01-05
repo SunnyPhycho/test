@@ -92,7 +92,7 @@ class handler(BaseHTTPRequestHandler):
             
         cur_y += 20
         # [정보]
-        info_str = f"👍 {likes}    💬 {len(comments)}    scrap 5"
+        info_str = f"👍 {likes}    💬 {len(comments)}    📔 5"
         draw.text((30, cur_y), info_str, font=f_se, fill='#888888')
         cur_y += 40
         
