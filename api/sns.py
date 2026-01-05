@@ -63,8 +63,9 @@ class handler(BaseHTTPRequestHandler):
             f_body = ImageFont.truetype(font_path, 32)
             f_cmt = ImageFont.truetype(font_path, 28)
             f_small = ImageFont.truetype(font_path, 20)
+            f_se = ImageFont.truetype(font_path02, 20)
             f_tag = ImageFont.truetype(font_path, 22)
-            f_emoji = ImageFont.truetype(font_path, 40)
+            f_emoji = ImageFont.truetype(font_path02, 40)
         except:
             f_title = f_body = f_cmt = f_small = f_tag = ImageFont.load_default()
 
@@ -92,7 +93,7 @@ class handler(BaseHTTPRequestHandler):
         cur_y += 20
         # [정보]
         info_str = f"👍 {likes}    💬 {len(comments)}    scrap 5"
-        draw.text((30, cur_y), info_str, font=f_small, fill='#888888')
+        draw.text((30, cur_y), info_str, font=f_se, fill='#888888')
         cur_y += 40
         
         draw.line([(0, cur_y), (TOTAL_W, cur_y)], fill='#EEEEEE', width=2)
@@ -112,7 +113,7 @@ class handler(BaseHTTPRequestHandler):
             # 소속 태그
             draw.text((30, cur_y), tag_text, font=f_tag, fill=color)
             draw.text((160, cur_y+2), "익명", font=f_small, fill='#AAAAAA')
-            draw.text((TOTAL_W-60, cur_y), "👍", font=f_small, fill='#CCCCCC')
+            draw.text((TOTAL_W-60, cur_y), "👍", font=f_se, fill='#CCCCCC')
             
             cur_y += 35
             
