@@ -37,16 +37,16 @@ class handler(BaseHTTPRequestHandler):
         body_wrapped = []
         for bl in body_lines:
             # width는 글자 수 기준이므로 비슷하게 유지하거나 약간 조정
-            body_wrapped.extend(textwrap.wrap(bl, width=16)) 
+            body_wrapped.extend(textwrap.wrap(bl, width=20)) 
         body_h = len(body_wrapped) * 80 + 100 # 줄간격 80px
         
         # 댓글
         cmt_wrapped_list = []
         cmt_h = 0
         for c in comments:
-            w_lines = textwrap.wrap(c, width=19)
+            w_lines = textwrap.wrap(c, width=25)
             cmt_wrapped_list.append(w_lines)
-            cmt_h += 80 + (len(w_lines) * 70) + 40 # 작성자줄 + 본문줄 + 여백
+            cmt_h += 80 + (len(w_lines) * 100) + 100 # 작성자줄 + 본문줄 + 여백
             
         TOTAL_H = base_h + body_h + cmt_h + 100
         
@@ -62,7 +62,7 @@ class handler(BaseHTTPRequestHandler):
         
         # 폰트 크기 2배로 증가
         try:
-            f_title = ImageFont.truetype(font_path, 80)
+            f_title = ImageFont.truetype(font_path, 72)
             f_body = ImageFont.truetype(font_path, 64)
             f_cmt = ImageFont.truetype(font_path, 56)
             f_small = ImageFont.truetype(font_path, 40)
