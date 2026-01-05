@@ -16,10 +16,8 @@ class handler(BaseHTTPRequestHandler):
         raw_body = query_params.get('body', ['내용 없음'])[0].replace('_', ' ')
         body_lines = raw_body.replace('\\n', '\n').split('\n')
         
-        # 작성자 태그 (입력 없으면 기본값)
         author_tag = query_params.get('tag', ['[공통학부]'])[0].replace('_', ' ')
         
-        # 댓글 내용 & 태그
         raw_cmt = query_params.get('cmt', [''])[0].replace('_', ' ')
         comments = raw_cmt.replace('\\n', '\n').split('|') if raw_cmt else []
         
@@ -29,27 +27,31 @@ class handler(BaseHTTPRequestHandler):
         likes = query_params.get('likes', [str(random.randint(10, 999))])[0]
 
         # ----------------------------------------------------
-        # 2. 높이 계산
+        # 2. 높이 계산 (모든 수치를 2배로 계산)
         # ----------------------------------------------------
-        base_h = 200
+        # ★ 기준 너비: 1200px (기존 600의 2배)
+        TOTAL_W = 1200
+        base_h = 400 # 헤더 영역
         
+        # 본문 (글자수는 그대로 유지하되 폰트가 커짐)
         body_wrapped = []
         for bl in body_lines:
-            body_wrapped.extend(textwrap.wrap(bl, width=28))
-        body_h = len(body_wrapped) * 40 + 20
+            # width는 글자 수 기준이므로 비슷하게 유지하거나 약간 조정
+            body_wrapped.extend(textwrap.wrap(bl, width=30)) 
+        body_h = len(body_wrapped) * 80 + 40 # 줄간격 80px
         
+        # 댓글
         cmt_wrapped_list = []
         cmt_h = 0
         for c in comments:
-            w_lines = textwrap.wrap(c, width=32)
+            w_lines = textwrap.wrap(c, width=34)
             cmt_wrapped_list.append(w_lines)
-            cmt_h += 40 + (len(w_lines) * 35) + 20
+            cmt_h += 80 + (len(w_lines) * 70) + 40 # 작성자줄 + 본문줄 + 여백
             
-        TOTAL_W = 600
-        TOTAL_H = base_h + body_h + cmt_h + 50
+        TOTAL_H = base_h + body_h + cmt_h + 100
         
         # ----------------------------------------------------
-        # 3. 그리기
+        # 3. 그리기 (2x Scale)
         # ----------------------------------------------------
         img = Image.new('RGB', (TOTAL_W, TOTAL_H), color='#FFFFFF')
         draw = ImageDraw.Draw(img)
@@ -58,76 +60,84 @@ class handler(BaseHTTPRequestHandler):
         font_path = os.path.join(current_dir, 'font.ttf')
         font_path02 = os.path.join(current_dir, 'NEB.ttf')
         
+        # 폰트 크기 2배로 증가
         try:
-            f_title = ImageFont.truetype(font_path, 40)
-            f_body = ImageFont.truetype(font_path, 32)
-            f_cmt = ImageFont.truetype(font_path, 28)
-            f_small = ImageFont.truetype(font_path, 20)
-            f_se = ImageFont.truetype(font_path02, 20)
-            f_tag = ImageFont.truetype(font_path, 22)
-            f_emoji = ImageFont.truetype(font_path02, 40)
+            f_title = ImageFont.truetype(font_path, 80)
+            f_body = ImageFont.truetype(font_path, 64)
+            f_cmt = ImageFont.truetype(font_path, 56)
+            f_small = ImageFont.truetype(font_path, 40)
+            f_tag = ImageFont.truetype(font_path, 44)
+            f_icon = ImageFont.truetype(font_path02, 40) # 아이콘
         except:
-            f_title = f_body = f_cmt = f_small = f_tag = ImageFont.load_default()
+            f_title = f_body = f_cmt = f_small = f_tag = f_icon = ImageFont.load_default()
 
         # [헤더]
-        draw.rectangle([(0,0), (TOTAL_W, 80)], fill='#C62917')
-        draw.text((20, 20), "Ether-net", font=f_title, fill='white')
-        draw.text((TOTAL_W-60, 25), "🔍", font=f_emoji, fill='white')
+        draw.rectangle([(0,0), (TOTAL_W, 160)], fill='#C62917')
+        draw.textfont_path = os.path.join(current_dir, 'font.ttf')
+        ((40, 40), "ACADEMY-TIMELINE", font=f_title, fill='white')
+        draw.text((TOTAL_W-120, 50), "🔍", font=f_icon, fill='white')
 
-        cur_y = 110
+        cur_y = 220
         
-        # [작성자 정보 (입력받은 태그 사용)]
-        draw.text((30, cur_y), author_tag, font=f_tag, fill='#C62917')
-        draw.text((150, cur_y), "· 익명", font=f_small, fill='#888888')
-        cur_y += 40
+        # [작성자 정보]
+        draw.text((60, cur_y), author_tag, font=f_tag, fill='#C62917')
+        draw.text((300, cur_y), "· 익명", font=f_small, fill='#888888')
+        cur_y += 80
         
         # [제목]
-        draw.text((30, cur_y), title, font=f_title, fill='black')
-        cur_y += 50
+        draw.text((60, cur_y), title, font=f_title, fill='black')
+        cur_y += 100
         
         # [본문]
         for line in body_wrapped:
-            draw.text((30, cur_y), line, font=f_body, fill='#333333')
-            cur_y += 40
+            draw.text((60, cur_y), line, font=f_body, fill='#333333')
+            cur_y += 80
             
-        cur_y += 20
-        # [정보]
-        info_str = f"👍 {likes}    💬 {len(comments)}    📔 5"
-        draw.text((30, cur_y), info_str, font=f_se, fill='#888888')
         cur_y += 40
         
-        draw.line([(0, cur_y), (TOTAL_W, cur_y)], fill='#EEEEEE', width=2)
-        cur_y += 20
+        # [정보: 좋아요/댓글/스크랩] (좌표 간격 2배)
+        # 1. 좋아요
+        draw.text((60, cur_y), "👍", font=f_icon, fill='#C62917')
+        draw.text((110, cur_y+4), f"{likes}", font=f_small, fill='#C62917')
+        
+        # 2. 댓글
+        draw.text((220, cur_y), "💬", font=f_icon, fill='#4ECDC4')
+        draw.text((270, cur_y+4), f"{len(comments)}", font=f_small, fill='#4ECDC4')
+        
+        # 3. 스크랩
+        draw.text((360, cur_y), "⭐", font=f_icon, fill='#FFD700')
+        draw.text((410, cur_y+4), "scrap 5", font=f_small, fill='#888888')
+        
+        cur_y += 80
+        
+        draw.line([(0, cur_y), (TOTAL_W, cur_y)], fill='#EEEEEE', width=4)
+        cur_y += 40
         
         # [댓글 목록]
         for i, lines in enumerate(cmt_wrapped_list):
-            # 태그 가져오기 (없으면 공통학부 처리)
-            if i < len(comment_tags):
-                tag_text = comment_tags[i]
-            else:
-                tag_text = "[공통학부]"
+            if i < len(comment_tags): tag_text = comment_tags[i]
+            else: tag_text = "[공통학부]"
             
-            # 글쓴이는 빨간색, 나머지는 회색
             color = "#C62917" if tag_text == "글쓴이" else "#555555"
             
-            # 소속 태그
-            draw.text((30, cur_y), tag_text, font=f_tag, fill=color)
-            draw.text((160, cur_y+2), "익명", font=f_small, fill='#AAAAAA')
-            draw.text((TOTAL_W-60, cur_y), "👍", font=f_se, fill='#CCCCCC')
+            # 태그
+            draw.text((60, cur_y), tag_text, font=f_tag, fill=color)
+            draw.text((320, cur_y+4), "익명", font=f_small, fill='#AAAAAA')
+            draw.text((TOTAL_W-120, cur_y), "👍", font=f_icon, fill='#CCCCCC')
             
-            cur_y += 35
+            cur_y += 70
             
             # 내용
             for line in lines:
-                draw.text((30, cur_y), line, font=f_cmt, fill='black')
-                cur_y += 35
+                draw.text((60, cur_y), line, font=f_cmt, fill='black')
+                cur_y += 70
             
-            cur_y += 5
-            draw.text((30, cur_y), f"{random.randint(1,59)}분 전", font=f_small, fill='#CCCCCC')
+            cur_y += 10
+            draw.text((60, cur_y), f"{random.randint(1,59)}분 전", font=f_small, fill='#CCCCCC')
             
-            cur_y += 25
-            draw.line([(30, cur_y), (TOTAL_W-30, cur_y)], fill='#F5F5F5', width=1)
-            cur_y += 20
+            cur_y += 50
+            draw.line([(60, cur_y), (TOTAL_W-60, cur_y)], fill='#F5F5F5', width=2)
+            cur_y += 40
 
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
