@@ -80,3 +80,11 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(img_byte_arr)
         return
+        
+from http.server import HTTPServer
+import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", "8000"))
+    server = HTTPServer(("0.0.0.0", port), handler)
+    server.serve_forever()
