@@ -12,7 +12,7 @@ except IndexError:
 
 # 설정
 base_image_path = "template.png"  # 원본 이미지
-result_dir = "result"             # 저장될 폴더
+result_dir = "public/result"             # 저장될 폴더
 font_path = "NanumGothic.ttf"     # 폰트 파일 (없으면 기본 폰트 사용하지만 한글 깨짐 주의)
 font_size = 40
 max_width_padding = 40            # 좌우 여백 합계
