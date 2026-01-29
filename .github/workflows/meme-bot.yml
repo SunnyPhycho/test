@@ -38,6 +38,6 @@ jobs:
           git config --global user.name "github-actions-bot"
           git config --global user.email "github-actions-bot@users.noreply.github.com"
           
-          git add result/
+          git add public/result/
           git commit -m "Auto-generated from external: ${{ github.event.client_payload.text }}" || echo "No changes"
           git push
